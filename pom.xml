@@ -7,13 +7,6 @@
 	<name>d2s-platform</name>
 	<description>Machine Learning Platform	</description>
 
-	<parent>
-		<groupId>data2semantics</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-        <relativePath>../parent/</relativePath>
-	</parent>
-
 	<repositories>
 		<repository>
 			<id>jade4j-releases</id>
@@ -135,5 +128,41 @@
 
 			</plugins>
 	</pluginManagement>
-	</build>
+</build>
+
+
+	<developers>
+		<developer>
+			<id>gerben</id>
+			<name>Gerben K.D De Vries</name>
+		</developer>
+
+		<developer>
+			<id>pbloem</id>
+			<name>Peter Bloem</name>
+		</developer>
+
+		<developer>
+			<id>wibisono</id>
+			<name>Adianto Wibisono</name>
+		</developer>
+	</developers>
+
+
+	<!-- Where we deploy stuff so that people can use, for the time being in internal ducktape server -->
+	<distributionManagement>
+	   <repository>
+	       <id>ducktape-nexus</id>
+	       <name>Ducktape Nexus repository releases </name>
+	       <url>http://ducktape.wongiseng.com/nexus/content/repositories/releases</url>
+	   </repository>
+
+	   <snapshotRepository>
+	       <id>ducktape-nexus</id>
+	       <name>Ducktape Nexus repository internal releases</name>
+	       <url>http://ducktape.wongiseng.com/nexus/content/repositories/snapshots</url>
+       	   </snapshotRepository>
+	</distributionManagement>
+
+
 </project>
