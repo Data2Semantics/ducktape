@@ -12,17 +12,6 @@
 			<id>jade4j-releases</id>
 			<url>https://raw.github.com/neuland/jade4j/master/releases</url>
 		</repository>
-        <repository>
-           <id>ducktape-nexus</id>
-           <name>Ducktape Nexus repository releases </name>
-           <url>http://ducktape.wongiseng.com/nexus/content/repositories/releases</url>
-       </repository>
-
-       <snapshotRepository>
-           <id>ducktape-nexus</id>
-           <name>Ducktape Nexus repository internal releases</name>
-           <url>http://ducktape.wongiseng.com/nexus/content/repositories/snapshots</url>
-       </snapshotRepository>
 	</repositories>
 
 	<dependencies>
