@@ -8,15 +8,20 @@ import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.Output;
+import org.data2semantics.platform.util.PlatformUtil;
 
 @DomainDefinition(prefix="python")
 public class PythonDomain implements Domain
 {
 	private static PythonDomain domain = new PythonDomain();
 
-	public boolean typeMatches(Output output, Input input)
-	{
-		return false;
+	@Override
+	public boolean typeMatches(Output output, Input input) {
+		DataType outputType = output.dataType();
+		DataType inputType =  input.dataType();
+		
+		return PlatformUtil.isAssignableFrom( inputType.clazz(), outputType.clazz());
+
 	}
 
 	public boolean check(ModuleInstance instance, List<String> errors)

@@ -43,12 +43,14 @@ public class JavaDomain implements Domain
 		return PlatformUtil.isAssignableFrom( inputType.clazz(), outputType.clazz());
 	}
 
+	// Not Used
 	@Override
 	public boolean check(ModuleInstance instance, List<String> errors)
 	{
 		return true; // TODO
 	}
 
+	// Not Used
 	@Override
 	public List<DataType> conversions(DataType type)
 	{
