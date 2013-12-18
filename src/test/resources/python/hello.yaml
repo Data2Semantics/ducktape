@@ -1,0 +1,11 @@
+workflow:
+   name: "Test python workflow"
+   modules:
+   
+    - module:
+        name: Hello
+        source: python:src/test/resources/python/hello.py
+        inputs:
+            name:  "Python"
+            
+            

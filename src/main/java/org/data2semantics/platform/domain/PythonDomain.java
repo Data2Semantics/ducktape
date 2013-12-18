@@ -1,5 +1,7 @@
 package org.data2semantics.platform.domain;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +11,8 @@ import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.Output;
 import org.data2semantics.platform.util.PlatformUtil;
+import org.python.core.PyCode;
+import org.python.util.PythonInterpreter;
 
 @DomainDefinition(prefix="python")
 public class PythonDomain implements Domain
@@ -43,7 +47,8 @@ public class PythonDomain implements Domain
 	{
 		return domain;
 	}
-
+	
+	// For the python, i need a way to reflect from the script source
 	public DataType inputType(String source, String name)
 	{
 		// TODO Auto-generated method stub
@@ -91,8 +96,21 @@ public class PythonDomain implements Domain
 
 	@Override
 	public boolean validate(String source, List<String> errors) {
-		// TODO Auto-generated method stub
-		return false;
+
+		PythonInterpreter interpreter = new PythonInterpreter();
+		
+		PyCode testCompile = null ;
+		
+		try {
+			testCompile = interpreter.compile(new FileReader(source));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			errors.add(e.getMessage());
+		}
+		
+		// At least jython can compile this code
+		return testCompile != null;
 	}
 
 	@Override

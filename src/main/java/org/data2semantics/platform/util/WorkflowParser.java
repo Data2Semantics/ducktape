@@ -103,7 +103,7 @@ public class WorkflowParser {
 			
 			List<String> errors = new ArrayList<String>();
 			
-			if(!domain.validate(source, errors)){
+			if(!domain.validate(sourceTail, errors)){
 				throw new InconsistentWorkflowException(errors);
 			}
 			
@@ -120,7 +120,7 @@ public class WorkflowParser {
 				builder.output(moduleName, outputName, description, outputTypeMap.get(outputName), print);
 			}
 		}
-		
+		 
 		return builder.workflow();
 	}
 

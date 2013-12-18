@@ -23,6 +23,7 @@ workflow:
             first:  
                reference: A.result
             second: [5,6]
+            
     - module:
         name: D
         source: org.data2semantics.modules.AdderModule
