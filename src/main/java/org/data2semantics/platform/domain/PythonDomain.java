@@ -113,6 +113,9 @@ public class PythonDomain implements Domain
 		return testCompile != null;
 	}
 
+	private static class PythonConfigParser {
+		
+	}
 	@Override
 	public boolean printInput(String source, String input)
 	{
