@@ -10,6 +10,7 @@ import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.Output;
+import org.data2semantics.platform.core.data.PythonType;
 import org.data2semantics.platform.util.PlatformUtil;
 import org.python.core.PyCode;
 import org.python.util.PythonInterpreter;
@@ -18,6 +19,7 @@ import org.python.util.PythonInterpreter;
 public class PythonDomain implements Domain
 {
 	private static PythonDomain domain = new PythonDomain();
+
 
 	@Override
 	public boolean typeMatches(Output output, Input input) {
@@ -48,17 +50,18 @@ public class PythonDomain implements Domain
 		return domain;
 	}
 	
-	// For the python, i need a way to reflect from the script source
-	public DataType inputType(String source, String name)
+	public DataType inputType(String source, String inputName)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String inputType = ConfigurationParser.getInputType(source, inputName);
+		DataType result = new PythonType(inputType);
+		return result;
 	}
 
-	public DataType outputType(String source, String name)
+	public DataType outputType(String source, String outputName)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String outputType = ConfigurationParser.getOutputType(source, outputName);
+		DataType result = new PythonType(outputType);
+		return result;
 	}
 
 	public List<String> outputs(String source)

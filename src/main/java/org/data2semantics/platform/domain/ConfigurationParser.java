@@ -96,6 +96,8 @@ class ConfigurationParser{
 	
 	private static Map<?,?> getConfigMap(String source) {
 		Map<?,?> result = null;
+		
+		//Handling domain prefix
 		if(source.contains(":")) source = source.split(":")[1];
 		try{
 			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(source));
