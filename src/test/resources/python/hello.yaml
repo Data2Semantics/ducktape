@@ -4,7 +4,7 @@ workflow:
    
     - module:
         name: Hello
-        source: python:src/test/resources/python/hello.py
+        source: python:src/test/resources/python/hello.cfg
         inputs:
             name:  "Python"
             

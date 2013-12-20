@@ -54,6 +54,7 @@ public class PythonDomain implements Domain
 	{
 		String inputType = ConfigurationParser.getInputType(source, inputName);
 		DataType result = new PythonType(inputType);
+		System.out.println(source + " " + result);
 		return result;
 	}
 
@@ -64,16 +65,18 @@ public class PythonDomain implements Domain
 		return result;
 	}
 
-	public List<String> outputs(String source)
-	{
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public List<String> outputs(String source) {
+
+		return ConfigurationParser.outputs(source);
 	}
+	
+
 
 	public boolean valueMatches(Object value, DataType type)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return PlatformUtil.isAssignableFrom(type.clazz(), value.getClass());
+		
 	}
 
 	@Override
@@ -86,20 +89,27 @@ public class PythonDomain implements Domain
 	@Override
 	public String inputDescription(String source, String name)
 	{
-		// TODO Auto-generated method stub
+		for(Map<String,String> input : ConfigurationParser.getInputList(source)){
+			if(input.get(ConfigurationParser.NAME).equals(name))
+				return input.get(ConfigurationParser.DESCRIPTION);
+		}
 		return null;
 	}
 
 	@Override
 	public String outputDescription(String source, String name)
 	{
-		// TODO Auto-generated method stub
+		for(Map<String,String> output : ConfigurationParser.getOutputList(source)){
+			if(output.get(ConfigurationParser.NAME).equals(name))
+				return output.get(ConfigurationParser.DESCRIPTION);
+		}
 		return null;
 	}
 
 	@Override
-	public boolean validate(String source, List<String> errors) {
+	public boolean validate(String configuration, List<String> errors) {
 
+		String source = ConfigurationParser.getCommand(configuration);
 		PythonInterpreter interpreter = new PythonInterpreter();
 		
 		PyCode testCompile = null ;
@@ -116,9 +126,7 @@ public class PythonDomain implements Domain
 		return testCompile != null;
 	}
 
-	private static class PythonConfigParser {
-		
-	}
+
 	@Override
 	public boolean printInput(String source, String input)
 	{

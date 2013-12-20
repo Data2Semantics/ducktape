@@ -1,4 +1,4 @@
-name=""
-def helloWorld():
-    return "Hello world" + name
+def helloWorld(name):
+
+    return "Hello world " + name
     

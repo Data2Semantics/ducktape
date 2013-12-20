@@ -14,7 +14,7 @@ import org.junit.Test;
 public class TestPythonDomain {
 
 
-
+	@Test
 	public void testHelloWorld() throws Exception {
 		
 		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/python/hello.yaml");

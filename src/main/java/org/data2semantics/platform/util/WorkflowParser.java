@@ -161,7 +161,6 @@ public class WorkflowParser {
 				
 				String description = domain.inputDescription(sourcePath, inputName);
 				
-				
 				// First handle multi input case, now we include  the case that items in this list this might also be reference.
 				if(inputValue instanceof List<?>){
 					
