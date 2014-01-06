@@ -1,4 +1,10 @@
-def helloWorld(name):
-
-    return "Hello world " + name
+def helloWorld():
+    global name, greetings
     
+    greetings = "Hello world " + name
+    return greetings
+
+print "Check ", name, greetings
+helloWorld();
+
+print "Check ", name, greetings

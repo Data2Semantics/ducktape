@@ -1,12 +1,15 @@
 package org.data2semantics.platform.domain;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -32,25 +35,7 @@ public class PythonDomain implements Domain
 {
 	private static PythonDomain domain = new PythonDomain();
 
-	
-	public boolean execute(ModuleInstance instance, List<String> errors)
-	{
-	
-		// Inject value to the python domain
-		String pythonConfig = instance.module().source();
-		String pythonSource = ConfigurationParser.getCommand(pythonConfig);
-		
-		
-		
-		
-		// Call the real execution after value is assigned.
-		
-		// Extract output result of execution
-		
-		
-		return false;
-	}
-	
+
 
 	@Override
 	public boolean typeMatches(Output output, Input input) {
@@ -160,9 +145,10 @@ public class PythonDomain implements Domain
 				packer.close();
 				fos.close();
 				
-				input_script.append("\nf=open("+currentInputFileName+")");
+				input_script.append("\nf=open('"+currentInputFileName+"')");
 				input_script.append("\ncontent = f.read()");
-				input_script.append("\n"+ currentInputFileName +"= msgpack.unpackb(content)");
+				// input name is the global variable name.
+				input_script.append("\n"+ii.name()+"= msgpack.unpackb(content)");
 			
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -175,8 +161,8 @@ public class PythonDomain implements Domain
 		for(InstanceOutput io : instance.outputs()){
 			String currentOutputFileName = instance.module().name()+"."+io.name();
 			
-			output_script.append("\nf=open('"+currentOutputFileName+"')");
-			output_script.append("\nf.write(msgpack.packb("+currentOutputFileName+"))");
+			output_script.append("\nf=open('"+currentOutputFileName+"', 'w')");
+			output_script.append("\nf.write(msgpack.packb("+io.name()+"))");
 			output_script.append("\nf.close()");
 			
 		}
@@ -184,18 +170,72 @@ public class PythonDomain implements Domain
 		
 		
 		// Source modification.
-		String originalSource = instance.module().source();
+		String configurationFile = instance.module().source();
+		String pythonSourceFile = ConfigurationParser.getCommand(configurationFile);
+
+		StringBuffer pythonSource = new StringBuffer();
+		
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File(pythonSourceFile)));
+			String line = reader.readLine();
+			while(line != null){
+					pythonSource.append("\n"+line);
+					line = reader.readLine();
+			}
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		StringBuffer modifiedSource = new StringBuffer();
 		// Append *input-script* to load the input instance dumps in Python source
 		modifiedSource.append(input_script);
-		modifiedSource.append(originalSource);
+		
+		
+		modifiedSource.append(pythonSource);
 		// Append *output-script* to dump all output generated
 		modifiedSource.append(output_script);
 		
 		
-		
 		// Execute Python source
+		System.out.println("EXECUTING : ");
+		System.out.println(modifiedSource);
+		
+		String modifiedPythonFile = instance.module().name()+".py";
+		
+		try {
+			FileWriter writer =new FileWriter(new File(modifiedPythonFile));
+			writer.write(modifiedSource.toString());
+			writer.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ProcessBuilder pb;
+		String osname = System.getProperty("os.name");
+		if(osname.startsWith("Windows"))
+			pb = new ProcessBuilder("C:\\python27\\python.exe", modifiedPythonFile);
+		else
+			pb = new ProcessBuilder("/usr/bin/python", modifiedPythonFile);
+		
+		Process process;
+		try {
+			process = pb.start();
+			pb.redirectErrorStream(true);
+
+			process.waitFor();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}       
+
 		
 		// Extract the dumped outputs from Python execution.
 		for(InstanceOutput io : instance.outputs()){
@@ -212,13 +252,21 @@ public class PythonDomain implements Domain
 				switch(type.getType()){
 				
 					case BOOLEAN:
-						io.setValue(unpacker.readBoolean());
+						Boolean bValue =unpacker.readBoolean(); 
+						io.setValue(bValue);
+						//redundant, not sure why I need this.
+						results.put(io.name(), bValue);
 						break;
 					case NUMBER:
-						io.setValue(unpacker.readBigInteger());
+						Integer iValue = unpacker.readInt();
+						io.setValue(iValue);
+						//redundant, not sure why I need this.
+						results.put(io.name(),iValue);
 						break;
 					case STRING:
-						io.setValue(unpacker.readString());
+						String sValue =unpacker.readString();
+						io.setValue(sValue);
+						results.put(io.name(),sValue);
 						break;
 					case DICTIONARY:
 						//TODO use unpacker templates
@@ -232,13 +280,10 @@ public class PythonDomain implements Domain
 						
 				}
 				
-				
 				fis.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("File output not found: " + e.getMessage());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
