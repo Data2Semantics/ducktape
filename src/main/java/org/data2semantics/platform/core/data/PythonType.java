@@ -121,4 +121,7 @@ public class PythonType implements DataType {
 
 		return stringValue;
 	}
+	public Types getType(){
+		return type;
+	}
 }

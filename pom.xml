@@ -15,7 +15,11 @@
 	</repositories>
 
 	<dependencies>
-
+	   <dependency>
+	       <groupId>org.msgpack</groupId>
+	       <artifactId>msgpack</artifactId>
+	       <version>0.6.0</version>
+	   </dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
