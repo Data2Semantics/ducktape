@@ -1,10 +1,9 @@
-def helloWorld():
-    global name, greetings
-    
-    greetings = "Hello world " + name
-    return greetings
+import ducktape
 
-print "Check ", name, greetings
-helloWorld();
+@ducktape.main(str,str)
+def helloWorld(name):
+    return "Hello " + str(name) 
 
-print "Check ", name, greetings
+
+def undecorated(func):
+    print "I am not ducktape module"

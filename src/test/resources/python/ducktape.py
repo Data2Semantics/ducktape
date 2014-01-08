@@ -1,46 +1,67 @@
 import msgpack
-
+import inspect
+import functools
 # Decorators for converting existing python function into ductape modules.
 # What needs to be indicated is the input types and the output types of each module.
+
+module_registry = {}
+
+class DucktapeModule(object):
+	def __init__(self, name):
+		self.name = name;
+
 
 def main(*types): 
 
     def decorator(original_function):
 
-	def wrapper(**args):
-	    # types include output
-	    print "Reading dumps for all function arguments ", args
-	    assert len(types) == len(args)+1
+	# What I wanted here is that this function 
+	fspec = inspect.getargspec(original_function)
 
-	    #For each input.	   
-	    output = original_function(**args)
-	    print "Dumping output ", output
+	# input names are actually arg names
+	inputnames = fspec.args
 
-	    return output
+	moduleName = original_function.__name__
+
+	module_registry[moduleName] = {} 
+
+	module_registry[moduleName]["name"] = moduleName 
+	module_registry[moduleName]["description"] = original_function.__doc__ 
+
+	module_registry[moduleName]["inputs"] = inputnames
+	module_registry[moduleName]["input_types"] = types
 
 
-	return wrapper
+
+	@functools.wraps(original_function)
+        def wrapper(*args):
+            # types include output
+            assert len(types) == len(args)+1
+
+	    #try to open file for each argnames and assigned it to args.
+	    #if these inputs somehow are not available, then return original function
+	    try :
+		newargs = [];
+		for f_input in inputnames :
+			fi = open (f_input)
+			value = msgpack.unpack(fi.read())
+			newargs.append( value )
 
 
-    return decorator
+		# Call the function using this.           
+		output = original_function(*newargs)
 
+		fo = open(original_function.__name__, "w")
+		fo.write(msgpack.pack(output))
+		fo.close()
 
-# Decorator which turns ordinary functions into keyword argument function
-# If the python method already all use keyword arguments then this is not needed.
-def inputs(*names):
+		
+		return output
 
-    def decorator(original_function):
-        
-	def wrapper(*args):
-	    assert len(names) == len(args)
+	    except:
+		return original_function(*args)
 
-	    kwargs = {}
-	    for i in range(len(args)):
-		kwargs[names[i]] = args[i]
-	    print kwargs
-	    return original_function(**kwargs)
+        return wrapper
 
-        return wrapper	
-
-    return decorator
+    return decorator 
 
