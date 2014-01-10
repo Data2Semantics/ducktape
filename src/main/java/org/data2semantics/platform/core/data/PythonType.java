@@ -28,19 +28,19 @@ public class PythonType implements DataType {
 		
 		public static Types getType(String inputType){
 			Types result = STRING;
-			if(inputType.contains("py_boolean"))
+			if(inputType.contains("boolean"))
 				return BOOLEAN;
 			
-			if(inputType.contains("py_number"))
+			if(inputType.contains("number") || inputType.contains("int") )
 				return NUMBER;
 			
-			if(inputType.contains("py_tuple"))
+			if(inputType.contains("tuple"))
 				return TUPLE;
 			
-			if(inputType.contains("py_list"))
+			if(inputType.contains("list"))
 				return LIST;
 		
-			if(inputType.contains("py_dictionary"))
+			if(inputType.contains("dictionary"))
 				return DICTIONARY;
 		
 			return result;

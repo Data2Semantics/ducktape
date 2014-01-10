@@ -110,7 +110,7 @@ public class WorkflowParser {
 			parseInputAndCouples(builder, moduleName, domain, sourcePath, inputMap, couples);
 			
 			// ask the domain object for the outputs
-			Map<String, DataType> outputTypeMap = getOutputTypes(source, domain);
+			Map<String, DataType> outputTypeMap = getOutputTypes(sourcePath, domain);
 			
 			for(String outputName : outputTypeMap.keySet())
 			{
@@ -249,9 +249,9 @@ public class WorkflowParser {
 	{
 		Map<String, DataType> result = new LinkedHashMap<String, DataType>();
 		
-		for(String output : domain.outputs(source))
+		for(String output : domain.outputs(source)) {
 			result.put(output, domain.outputType(source, output));
-		
+		}
 		return result;
 	}
 

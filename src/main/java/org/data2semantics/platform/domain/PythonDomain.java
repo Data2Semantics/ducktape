@@ -58,6 +58,8 @@ public class PythonDomain implements Domain
 	public DataType inputType(String config, String inputName)
 	{
 		String inputType = PythonDomainUtil.getInputType(config, inputName);
+		System.out.println("TypeCheck " +config + " " + inputName + " " +inputType);
+		
 		DataType result = new PythonType(inputType);
 		
 		return result;
@@ -88,125 +90,45 @@ public class PythonDomain implements Domain
 	public boolean execute(ModuleInstance instance, List<String> errors,
 			Map<String, Object> results) {
 
-		
-		// Dump all input instances using message packers.
-		// At the same time generate the input script prefix that is going to be prepended to Python code.
-		
-		MessagePack messagePack = new MessagePack();
-		
-		
-		// Dump inputs to some agreed intermediate file
-		StringBuffer input_script = new StringBuffer();
-		
-		input_script.append("\nimport msgpack\n");
-	
-		// This is going to be ugly, one intermediate file for each of the inputs.
-		for(InstanceInput ii : instance.inputs()){
-			String currentInputFileName = instance.module().name()+"."+ii.name();
-			
-			try {
-				FileOutputStream fos = new FileOutputStream(currentInputFileName);
-			
-				Packer packer = messagePack.createPacker(fos);
-				
-				// Perhaps there is more elegant way of doing this, based on datatype.
-				// Still does not handle list/map/other objects
-				PythonType type = (PythonType) ii.dataType();
-				
-				switch (type.getType()) {
-				case BOOLEAN:
-					packer.write((Boolean) ii.value());
-					break;
-				case STRING:
-					packer.write((String) ii.value());
-					break;
-
-				case NUMBER:
-
-					break;
-
-				case TUPLE:
-					break;
-				case DICTIONARY:
-					break;
-				case LIST:
-					break;
-
-				}
-				
-				
-				packer.close();
-				fos.close();
-				
-				input_script.append("\nf=open('"+currentInputFileName+"')");
-				input_script.append("\ncontent = f.read()");
-				// input name is the global variable name.
-				input_script.append("\n"+ii.name()+"= msgpack.unpackb(content)");
-			
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-		}
-		
-		// Generate the output_script to dump and be appended at the e
-		StringBuffer output_script = new StringBuffer();
-		for(InstanceOutput io : instance.outputs()){
-			String currentOutputFileName = instance.module().name()+"."+io.name();
-			
-			output_script.append("\nf=open('"+currentOutputFileName+"', 'w')");
-			output_script.append("\nf.write(msgpack.packb("+io.name()+"))");
-			output_script.append("\nf.close()");
-			
-		}
-		
-		
+		// Dump inputs to files.
+		dumpPackedInputInstancesToFile(instance);
 		
 		// Source modification.
-
 		String pythonSourceFile =instance.module().source();
+		String pythonSource = PythonDomainUtil.getFileContent(pythonSourceFile);
+		String underlyingFunction = PythonDomainUtil.getModuleFunctionName(pythonSourceFile);
+		pythonSource = "\nimport sys\nsys.path.append('src/test/resources/python')\n"+pythonSource;
+		pythonSource+="\n"+underlyingFunction+"([])";
 
-		StringBuffer pythonSource = new StringBuffer();
+		System.out.println("This is what eventually will be run \n"+pythonSource);
+		// Execute Python source
+		String modifiedPythonFileName = instance.module().name()+".py";
 		
+		PythonDomainUtil.dumpToTemporaryFile(pythonSource.toString(), modifiedPythonFileName);
+		
+		Process p_exec = PythonDomainUtil.invokePythonScript(modifiedPythonFileName);       
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(pythonSourceFile)));
-			String line = reader.readLine();
-			while(line != null){
-					pythonSource.append("\n"+line);
-					line = reader.readLine();
-			}
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			StringBuffer errorsStream = PythonDomainUtil.readInputStreamToBuffer(p_exec.getErrorStream());
+			if(errorsStream.length() > 0)
+				errors.add(errorsStream.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 		
-		StringBuffer modifiedSource = new StringBuffer();
-		// Append *input-script* to load the input instance dumps in Python source
-		modifiedSource.append(input_script);
+		retrievePackedOutputsBackfromFile(instance, results);
 		
 		
-		modifiedSource.append(pythonSource);
-		// Append *output-script* to dump all output generated
-		modifiedSource.append(output_script);
-		
-		
-		// Execute Python source
-		System.out.println("EXECUTING : ");
-		System.out.println(modifiedSource);
-		
-		String modifiedPythonFile = instance.module().name()+".py";
-		
-		PythonDomainUtil.dumpToTemporaryFile(modifiedSource.toString(), modifiedPythonFile);
-		
-		PythonDomainUtil.invokePythonScript(modifiedPythonFile);       
+		return true;
+	}
 
-		
+	private void retrievePackedOutputsBackfromFile(ModuleInstance instance,
+			Map<String, Object> results) {
+		MessagePack messagePack =new MessagePack();
 		// Extract the dumped outputs from Python execution.
 		for(InstanceOutput io : instance.outputs()){
-			String currentOutputFileName = instance.module().name()+"."+io.name();
+			String currentOutputFileName = PythonDomainUtil.getModuleFunctionName(instance.module().source());
 			
 			try {
 				FileInputStream fis = new FileInputStream(new File(currentOutputFileName));
@@ -216,6 +138,7 @@ public class PythonDomain implements Domain
 				// Use the python type to determine how to unpack this stuff.
 				
 				PythonType type = (PythonType)io.dataType();
+
 				switch(type.getType()){
 				
 					case BOOLEAN:
@@ -256,9 +179,62 @@ public class PythonDomain implements Domain
 			
 		
 		}
+	}
+
+	private void  dumpPackedInputInstancesToFile(ModuleInstance instance) {
+		// Dump all input instances using message packers.
+		// At the same time generate the input script prefix that is going to be prepended to Python code.
+		
+		MessagePack messagePack = new MessagePack();
 		
 		
-		return false;
+		// Dump inputs to some agreed intermediate file
+		
+		// This is going to be ugly, one intermediate file for each of the inputs.
+		for(InstanceInput ii : instance.inputs()){
+			String currentInputFileName = ii.name();
+			
+			try {
+				FileOutputStream fos = new FileOutputStream(currentInputFileName);
+			
+				Packer packer = messagePack.createPacker(fos);
+				
+				// Perhaps there is more elegant way of doing this, based on datatype.
+				// Still does not handle list/map/other objects
+				PythonType type = (PythonType) ii.dataType();
+				
+				switch (type.getType()) {
+				case BOOLEAN:
+					packer.write((Boolean) ii.value());
+					break;
+				case STRING:
+					packer.write((String) ii.value());
+					break;
+
+				case NUMBER:
+
+					break;
+
+				case TUPLE:
+					break;
+				case DICTIONARY:
+					break;
+				case LIST:
+					break;
+
+				}
+				
+				
+				packer.close();
+				fos.close();
+				
+			
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+
 	}
 
 

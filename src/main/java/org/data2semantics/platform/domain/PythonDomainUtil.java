@@ -50,12 +50,7 @@ public class PythonDomainUtil {
 	static final String IMPORT_DUCKTAPE = "\nimport ducktape"+
 										  "\nimport msgpack";
 	
-	static final String DUMP_DUCKTAPE_REGISTRY = "\nf=open('moduleInfo.msg','w')"+
-												 "\nfor mi in ducktape.module_registry:"+
-												 "\n   cur = ducktape.module_registry[mi]"+
-												 "\n   f.write(msgpack.packb([cur['name'],cur['description'],cur['inputs'],cur['input_types'],cur['outputs'],cur['output_types']]))"+
-												 "\nf.close()";
-	
+	static final String DUMP_DUCKTAPE_REGISTRY = "\nducktape.dump_registry()";
 	public static ModuleInfo getDucktapeModulesInfoFromPythonScript(String pythonSourceLocation){
 		
 		ModuleInfo result = new ModuleInfo();
@@ -90,7 +85,7 @@ public class PythonDomainUtil {
 
 
 
-	private static String getFileContent(String pythonSource) {
+	public static String getFileContent(String pythonSource) {
 		StringBuffer result = new StringBuffer();
 		try {
 			FileReader reader = new FileReader(new File(pythonSource));
@@ -135,7 +130,7 @@ public class PythonDomainUtil {
 		return false;
 	}
 	
-	private static StringBuffer readInputStreamToBuffer(InputStream inputStream)
+	public static StringBuffer readInputStreamToBuffer(InputStream inputStream)
 			throws IOException {
 		
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -188,5 +183,12 @@ public class PythonDomainUtil {
 	public static String getOutputDescription(String source, String outputName) {
 		ModuleInfo info = getDucktapeModulesInfoFromPythonScript(source);
 		return info.outputDescription(outputName);
+	}
+	
+	
+	public static String getModuleFunctionName(String source) {
+		ModuleInfo info = getDucktapeModulesInfoFromPythonScript(source);
+		
+		return info.name;
 	}
 }

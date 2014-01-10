@@ -39,14 +39,15 @@ public class ModuleInfo {
 		String result = null;
 		for(int i=0;i<outputs.size();i++){
 			if(outputs.get(i).equals(outputName)) 
-				return input_types.get(i);
+				return output_types.get(i);
 		}
 		return result;
 	}
 
 	// We'll deal with these later.
 	public String inputDescription(String inputName) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stubingw
+		
 		return "";
 	}
 
