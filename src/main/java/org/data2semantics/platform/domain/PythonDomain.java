@@ -1,17 +1,12 @@
 package org.data2semantics.platform.domain;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +22,6 @@ import org.data2semantics.platform.util.PlatformUtil;
 import org.msgpack.MessagePack;
 import org.msgpack.packer.Packer;
 import org.msgpack.unpacker.Unpacker;
-import org.python.core.PyCode;
-import org.python.util.PythonInterpreter;
 
 @DomainDefinition(prefix="python")
 public class PythonDomain implements Domain
@@ -64,15 +57,15 @@ public class PythonDomain implements Domain
 	
 	public DataType inputType(String config, String inputName)
 	{
-		String inputType = ConfigurationParser.getInputType(config, inputName);
+		String inputType = PythonDomainUtil.getInputType(config, inputName);
 		DataType result = new PythonType(inputType);
-		System.out.println(config + " " + result);
+		
 		return result;
 	}
 
 	public DataType outputType(String config, String outputName)
 	{
-		String outputType = ConfigurationParser.getOutputType(config, outputName);
+		String outputType = PythonDomainUtil.getOutputType(config, outputName);
 		DataType result = new PythonType(outputType);
 		return result;
 	}
@@ -80,7 +73,7 @@ public class PythonDomain implements Domain
 	@Override
 	public List<String> outputs(String source) {
 
-		return ConfigurationParser.outputs(source);
+		return PythonDomainUtil.outputs(source);
 	}
 	
 
@@ -95,9 +88,6 @@ public class PythonDomain implements Domain
 	public boolean execute(ModuleInstance instance, List<String> errors,
 			Map<String, Object> results) {
 
-		StringBuffer input_script = new StringBuffer();
-		
-		input_script.append("\nimport msgpack\n");
 		
 		// Dump all input instances using message packers.
 		// At the same time generate the input script prefix that is going to be prepended to Python code.
@@ -106,7 +96,10 @@ public class PythonDomain implements Domain
 		
 		
 		// Dump inputs to some agreed intermediate file
+		StringBuffer input_script = new StringBuffer();
 		
+		input_script.append("\nimport msgpack\n");
+	
 		// This is going to be ugly, one intermediate file for each of the inputs.
 		for(InstanceInput ii : instance.inputs()){
 			String currentInputFileName = instance.module().name()+"."+ii.name();
@@ -170,8 +163,8 @@ public class PythonDomain implements Domain
 		
 		
 		// Source modification.
-		String configurationFile = instance.module().source();
-		String pythonSourceFile = ConfigurationParser.getCommand(configurationFile);
+
+		String pythonSourceFile =instance.module().source();
 
 		StringBuffer pythonSource = new StringBuffer();
 		
@@ -206,35 +199,9 @@ public class PythonDomain implements Domain
 		
 		String modifiedPythonFile = instance.module().name()+".py";
 		
-		try {
-			FileWriter writer =new FileWriter(new File(modifiedPythonFile));
-			writer.write(modifiedSource.toString());
-			writer.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		PythonDomainUtil.dumpToTemporaryFile(modifiedSource.toString(), modifiedPythonFile);
 		
-		ProcessBuilder pb;
-		String osname = System.getProperty("os.name");
-		if(osname.startsWith("Windows"))
-			pb = new ProcessBuilder("C:\\python27\\python.exe", modifiedPythonFile);
-		else
-			pb = new ProcessBuilder("/usr/bin/python", modifiedPythonFile);
-		
-		Process process;
-		try {
-			process = pb.start();
-			pb.redirectErrorStream(true);
-
-			process.waitFor();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}       
+		PythonDomainUtil.invokePythonScript(modifiedPythonFile);       
 
 		
 		// Extract the dumped outputs from Python execution.
@@ -294,44 +261,26 @@ public class PythonDomain implements Domain
 		return false;
 	}
 
+
+
+
+
 	@Override
-	public String inputDescription(String source, String name)
+	public String inputDescription(String source, String inputName)
 	{
-		for(Map<String,String> input : ConfigurationParser.getInputList(source)){
-			if(input.get(ConfigurationParser.NAME).equals(name))
-				return input.get(ConfigurationParser.DESCRIPTION);
-		}
-		return null;
+		return PythonDomainUtil.getInputDescription(source,inputName);
 	}
 
 	@Override
-	public String outputDescription(String source, String name)
+	public String outputDescription(String source, String outputName)
 	{
-		for(Map<String,String> output : ConfigurationParser.getOutputList(source)){
-			if(output.get(ConfigurationParser.NAME).equals(name))
-				return output.get(ConfigurationParser.DESCRIPTION);
-		}
-		return null;
+		return PythonDomainUtil.getOutputDescription(source,outputName);
 	}
 
 	@Override
-	public boolean validate(String configuration, List<String> errors) {
-
-		String source = ConfigurationParser.getCommand(configuration);
-		PythonInterpreter interpreter = new PythonInterpreter();
+	public boolean validate(String pythonSource, List<String> errors) {
 		
-		PyCode testCompile = null ;
-		
-		try {
-			testCompile = interpreter.compile(new FileReader(source));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			errors.add(e.getMessage());
-		}
-		
-		// At least jython can compile this code
-		return testCompile != null;
+		return PythonDomainUtil.validate(pythonSource, errors);
 	}
 
 

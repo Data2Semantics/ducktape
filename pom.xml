@@ -119,7 +119,7 @@
 				</plugin>
 
 				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
+				    <artifactId>maven-assembly-plugin</artifactId>
 					<configuration>
 						<archive>
 							<manifest>
@@ -131,6 +131,26 @@
 						</descriptorRefs>
 					</configuration>
 				</plugin>
+				
+				
+				<plugin>
+                    <groupId>net.sf.mavenjython</groupId>
+                    <artifactId>jython-compile-maven-plugin</artifactId>
+                        <version>1.1</version>
+                    <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jython</goal>
+                       </goals>
+                    </execution>
+                    </executions>
+                    <configuration>
+                    <libraries>
+                        <param>msgpack-python</param>
+                    </libraries>
+                    </configuration>
+                </plugin> 
 
 			</plugins>
 	</pluginManagement>

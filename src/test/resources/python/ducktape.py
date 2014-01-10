@@ -29,7 +29,11 @@ def main(*types):
 	module_registry[moduleName]["description"] = original_function.__doc__ 
 
 	module_registry[moduleName]["inputs"] = inputnames
-	module_registry[moduleName]["input_types"] = types
+	module_registry[moduleName]["input_types"] = [t for t in types[:-1]]
+
+	module_registry[moduleName]["outputs"] = [moduleName]
+	module_registry[moduleName]["output_types"] = [o for o in types[-1:]]
+
 
 
 
