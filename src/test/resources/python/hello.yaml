@@ -4,9 +4,16 @@ workflow:
    
     - module:
         name: Hello
-        source: python:src/test/resources/python/hello.cfg
+        source: python:src/test/resources/python/hello.py
         inputs:
-            name:  "Python"
+            name:  "World"
+        
+            
+    - module:
+        name: CountTriple
+        source: python:src/test/resources/python/count_triples.py
+        inputs:
+            resourceURI:  http://dbpedia.org/resource/Elvis_Presley
         
             
             
