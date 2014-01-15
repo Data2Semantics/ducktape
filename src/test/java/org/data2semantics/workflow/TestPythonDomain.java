@@ -48,6 +48,31 @@ public class TestPythonDomain {
 	}
 	
 
+
+	@Test
+	public void testPairingPython() throws Exception {
+		
+		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/python/test-pairing-python.yaml");
+		
+		ResourceSpace resourceSpace = new ResourceSpace();
+		
+		ExecutionProfile localExecutionProfile = new LocalExecutionProfile();
+		
+		Orchestrator platformOrchestrator = new Orchestrator(workflow, localExecutionProfile, resourceSpace);
+		
+		platformOrchestrator.orchestrate();
+		
+		for(Module m : workflow.modules()){
+			System.out.println("\nModule " + m.name());
+			
+			for(ModuleInstance mi :  m.instances()){
+					for(InstanceOutput io : mi.outputs())
+					System.out.print(io.name()+":"+io.value()+ " ");
+			}
+		}
+		
+	}
+	
 	@Test
 	public void testModuleInfo1() throws IOException{
 		

@@ -1,9 +1,6 @@
 package org.data2semantics.platform.core.data;
 
-import java.util.List;
-
 import org.data2semantics.platform.core.Module;
-import org.data2semantics.platform.core.State;
 
 public class Output implements Data 
 {

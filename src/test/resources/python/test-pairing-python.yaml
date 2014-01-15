@@ -1,0 +1,31 @@
+workflow:
+    name: "Test Pairing Python Java Workflow"
+    modules:
+
+     - module:
+         name: A
+         source: org.data2semantics.modules.AdderModule
+         inputs:
+             first:  [1,2]
+             second: 1
+     - module:
+         name: B
+         source: org.data2semantics.modules.AdderModule
+         inputs:
+             first:  [3,4,5]
+             second: 1
+
+     - module:
+         name: C
+         source: python:src/test/resources/python/multiply.py
+         inputs:
+             first: 
+                - reference: A.result
+                - reference: B.result
+                
+             second: 
+                - reference: A.product
+                - reference: B.product
+                    
+         couple:
+            - [first, second]          

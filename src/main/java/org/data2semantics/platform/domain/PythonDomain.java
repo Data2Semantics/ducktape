@@ -96,6 +96,8 @@ public class PythonDomain implements Domain
 		// Source modification.
 		String pythonSourceFile =instance.module().source();
 		String pythonSource = PythonDomainUtil.getFileContent(pythonSourceFile);
+		
+		//If there is a better way to do this.
 		String underlyingFunction = PythonDomainUtil.getModuleFunctionName(pythonSourceFile);
 		pythonSource = "\nimport sys\nsys.path.append('src/test/resources/python')\n"+pythonSource;
 		pythonSource+="\n"+underlyingFunction+"([])";
@@ -212,7 +214,7 @@ public class PythonDomain implements Domain
 					break;
 
 				case NUMBER:
-
+					packer.write((Integer) ii.value());
 					break;
 
 				case TUPLE:
@@ -264,14 +266,14 @@ public class PythonDomain implements Domain
 	public boolean printInput(String source, String input)
 	{
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
-	public boolean printOutput(String source, String input)
+	public boolean printOutput(String source, String output)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		// For now always print output of python module. Need a decorator to denote this.
+		return true;
 	}
 	
 	
