@@ -1,4 +1,0 @@
-ducktape
-========
-
-Ducktape 
