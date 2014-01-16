@@ -3,15 +3,8 @@ package org.data2semantics.platform.execution;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
-import org.data2semantics.platform.core.Module;
-import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.reporting.Reporter;
 import org.data2semantics.platform.resourcespace.ResourceSpace;

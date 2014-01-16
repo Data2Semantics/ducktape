@@ -25,13 +25,14 @@ import org.kohsuke.args4j.Option;
 
 public class Run
 {	
-	private static WorkflowParser wfParser = new WorkflowParser();
 	
 	enum ExecutionProfiles {LOCAL, THREADED, HADOOP}
 	@Option(name="--profile", usage="Execution profile to be used LOCAL THREADED HADOOP (default: LOCAL) ")
 	private static ExecutionProfiles execProfile = ExecutionProfiles.LOCAL;
 	  
-    @Option(name="--classpath", usage="A directory containing source code and resources to be loaded. Each source file should be in a directory that matches the name of its controller (ie. java files should be in a directory called 'java'). (default: none)")
+    @Option(name="--classpath", usage="A directory containing source code and resources to be loaded." +
+    		" Each source file should be in a directory that matches the name of its controller " +
+    		"(ie. java files should be in a directory called 'java'). (default: none)")
 	private static String classPath = "";
 
     @Option(name="--output", usage="The output directory (default: the working directory)")    

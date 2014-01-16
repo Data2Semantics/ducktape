@@ -1,21 +1,13 @@
 package org.data2semantics.platform.execution;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
-import javax.swing.DebugGraphics;
-
 
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
-import org.data2semantics.platform.core.State;
 import org.data2semantics.platform.core.Workflow;
-import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.reporting.Reporter;
 import org.data2semantics.platform.resourcespace.ResourceSpace;
-import org.data2semantics.platform.wrapper.SimpleModuleWrapper;
 
 
 
@@ -59,7 +51,7 @@ abstract public class ExecutionProfile {
 				
 				// Perhaps at this stage actually all the inputs are already 
 				// resolved ?
-				List<Input> inputs = module.module().inputs();
+				//List<Input> inputs = module.module().inputs();
 				
 				// If available inputs are exactly the same type with the 
 				// expected inputs then we will only execute once.

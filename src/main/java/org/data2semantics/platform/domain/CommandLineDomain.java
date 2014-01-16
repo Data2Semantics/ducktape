@@ -21,7 +21,6 @@ public class CommandLineDomain implements Domain {
 	@Override
 	public boolean execute(ModuleInstance instance, List<String> errors,
 			Map<String, Object> results) {
-		// TODO 
 		// implement execute module, using pipe/runtime
 		
 		String cmdLineSource = instance.module().source();
@@ -56,7 +55,6 @@ public class CommandLineDomain implements Domain {
 			
 			for(InstanceInput input: inputs){
 				env.put(input.name(), input.value().toString());
-//				System.out.println("Setting env "+ input.name()+ " " +input.value());
 			}
 			
 			Process process = pb.start();       
@@ -64,7 +62,6 @@ public class CommandLineDomain implements Domain {
 
 			process.waitFor();
 			
-//			System.out.println("Exit value : "+		process.exitValue());
 			InputStream inputStream = process.getInputStream ();
 			String result = IOUtils.toString(inputStream, "UTF-8");
 			
@@ -90,6 +87,7 @@ public class CommandLineDomain implements Domain {
 	 * @param stringValue
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private Object castOutputType(InstanceOutput output, String stringValue) {
 		CommandLineType type = (CommandLineType) output.dataType();
 		

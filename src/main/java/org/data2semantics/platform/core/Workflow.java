@@ -3,16 +3,13 @@ package org.data2semantics.platform.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
@@ -23,8 +20,6 @@ import org.data2semantics.platform.core.data.RawInput;
 import org.data2semantics.platform.core.data.ReferenceInput;
 import org.data2semantics.platform.domain.Domain;
 import org.data2semantics.platform.exception.InconsistentWorkflowException;
-import org.data2semantics.platform.resourcespace.ResourceSpace;
-import org.data2semantics.platform.wrapper.SimpleModuleWrapper;
 
 /**
  * This class represents a workflow. We guarantee the following:
@@ -400,7 +395,8 @@ public final class Workflow {
 				for(Object value : multiValues){
 					if(value instanceof Map){
 						
-						Map ref = (Map) value;
+						@SuppressWarnings("unchecked")
+						Map<String,String> ref = (Map <String,String>) value;
 						String referenceString = (String) ref.get("reference");
 
 						// Reference is in : module.output format, we split using .
@@ -448,7 +444,8 @@ public final class Workflow {
 				for(Object value : multiValues){
 					if(value instanceof Map){
 						
-						Map ref = (Map) value;
+						@SuppressWarnings("unchecked")
+						Map<String,String> ref = (Map<String,String>) value;
 						String referenceString = (String) ref.get("reference");
 
 						// Reference is in : module.output format, we split using .
@@ -508,6 +505,7 @@ public final class Workflow {
 				this.source = source;
 			}
 			
+			@SuppressWarnings("unused")
 			public void setDomain(Domain domain){
 				this.domain = domain;
 			}

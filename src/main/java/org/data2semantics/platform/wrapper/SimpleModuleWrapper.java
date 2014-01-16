@@ -1,24 +1,20 @@
 package org.data2semantics.platform.wrapper;
 
-import static org.junit.Assert.assertEquals;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.AbstractModule;
 import org.data2semantics.platform.core.State;
 import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.domain.Domain;
-import org.data2semantics.platform.execution.ExecutionProfile;
 import org.data2semantics.platform.resourcespace.ResourceSpace;
 import org.data2semantics.platform.util.PlatformUtil;
 
@@ -31,7 +27,7 @@ import org.data2semantics.platform.util.PlatformUtil;
  */
 public class SimpleModuleWrapper extends AbstractModule{
 
-	private final static Logger LOG = Logger.getLogger(SimpleModuleWrapper.class.getName());
+	private final static Logger LOG = Logger.getLogger(SimpleModuleWrapper.class);
 		
 	ClassLoader loader;
 	Class<?> myclass;
@@ -82,7 +78,7 @@ public class SimpleModuleWrapper extends AbstractModule{
 				actualInputMap.put(key.toString(), inputMap.get(key));
 			}
 		}
-		System.out.println("Module name " + name + " reference size " + references.size());
+		LOG.log(Level.DEBUG,"Module name " + name + " reference size " + references.size());
 			
 		// IF there are no references means this module is ready
 		

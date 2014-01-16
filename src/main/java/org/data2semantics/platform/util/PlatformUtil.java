@@ -10,15 +10,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Logger;
 
+
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.annotation.In;
 import org.data2semantics.platform.annotation.Main;
 import org.data2semantics.platform.annotation.Module;
 import org.data2semantics.platform.annotation.Out;
 
 public class PlatformUtil {
-	private final static Logger LOG = Logger.getLogger(PlatformUtil.class.getName());
+	private final static Logger log = Logger.getLogger(PlatformUtil.class);
 	/**
 	 * Call default constructor of a module and return created object
 	 * @throws InvocationTargetException 
@@ -148,7 +149,7 @@ public class PlatformUtil {
 				for(Annotation curAnnotation : annotations[i]){
 					if(curAnnotation instanceof In){
 						result.add(m);
-						System.out.println("DEBUG "+paramTypes[i] + " annotation "+curAnnotation);
+						log.debug(paramTypes[i] + " annotation "+curAnnotation);
 						break;
 					}
 				}
@@ -165,7 +166,7 @@ public class PlatformUtil {
 		
 		for(int i=0;i<args.length;i++){
 			if(!isAssignableFrom(parameterTypes[i], args[i].getClass())){
-				LOG.info(parameterTypes[i]+ " is not assignable to " + args[i].getClass());
+				log.info(parameterTypes[i]+ " is not assignable to " + args[i].getClass());
 				return false;
 			}
 		}
@@ -241,7 +242,7 @@ public class PlatformUtil {
 			}
 			
 			if(tobeExpanded[i]){
-				Collection currentCol = ((Collection)arguments[i]);
+				Collection<?> currentCol = ((Collection<?>)arguments[i]);
 				for(Object current : currentCol ){
 					curentAssignment[i] = current;
 					unroll(i+1, curentAssignment, result, arguments, tobeExpanded);
@@ -256,7 +257,7 @@ public class PlatformUtil {
 		
 		if(!(object instanceof Collection)) return false;
 		
-		Collection coll = (Collection) object;
+		Collection<?> coll = (Collection<?>) object;
 		Object checkMember = coll.iterator().next(); 
 		
 		return isAssignableFrom(class1, checkMember.getClass());
@@ -277,7 +278,7 @@ public class PlatformUtil {
 			if(annotations[i][0] instanceof In){
 				In ip = (In) annotations[i][0];
 				result[i] = actualInputMap.get(ip.name());
-				LOG.info("Getting " + ip.name() + " " + result[i]);
+				log.info("Getting " + ip.name() + " " + result[i]);
 			}
 			
 		}

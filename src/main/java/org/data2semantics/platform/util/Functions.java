@@ -41,7 +41,7 @@ public class Functions
 		StringBuilder randomString = new StringBuilder();
 		for (int i : Series.series(length)) 
 		{
-			int rnum = Global.random().nextInt(chars.length());
+			int rnum = Global.random().nextInt(chars.length()+i);
 			randomString.append(chars.charAt(rnum));
 		}
 		

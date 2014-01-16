@@ -3,12 +3,10 @@ package org.data2semantics.platform.execution;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
-import org.data2semantics.platform.core.State;
-import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.reporting.Reporter;
-import org.data2semantics.platform.resourcespace.ResourceSpace;
 
 
 /**
@@ -18,6 +16,7 @@ import org.data2semantics.platform.resourcespace.ResourceSpace;
  */
 public class LocalExecutionProfile extends ExecutionProfile {
 
+	Logger log = Logger.getLogger(LocalExecutionProfile.class);
 	@Override
 	public void executeModules(List<Module> modules, List<Reporter> reporters) {
 		
@@ -41,14 +40,13 @@ public class LocalExecutionProfile extends ExecutionProfile {
 				
 				for(ModuleInstance mi : m.instances()){
 	
-					// System.out.println(" Executing instance of module  : " + mi.module().name());
-					// System.out.println("    Inputs : "+mi.inputs());
+					log.debug(" Executing instance of module  : " + mi.module().name());
+					log.debug("    Inputs : "+mi.inputs());
 					mi.execute();
-					// System.out.println("    Outputs : "+mi.outputs());
-					// System.out.println(mi+" "+mi.state());
+					log.debug("    Outputs : "+mi.outputs());
+					log.debug(mi+" "+mi.state());
 							
 				}
-				// System.out.println(m.name()+" "+m.finished());
 				
 			
 			} else 

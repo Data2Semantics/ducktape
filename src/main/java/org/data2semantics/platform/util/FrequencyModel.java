@@ -159,8 +159,7 @@ public class FrequencyModel<T>
 		double draw = Global.random().nextDouble();
 		double total = 0.0;
 		
-		int op = 0;
-		
+	
 		T choice = null;
 		for(T token : frequencies.keySet())
 		{

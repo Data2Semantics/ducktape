@@ -1,15 +1,14 @@
 package org.data2semantics.platform.domain;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.annotation.DomainDefinition;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.data.DataType;
@@ -28,7 +27,7 @@ public class PythonDomain implements Domain
 {
 	private static PythonDomain domain = new PythonDomain();
 
-
+	Logger log = Logger.getLogger(PythonDomain.class);
 
 	@Override
 	public boolean typeMatches(Output output, Input input) {
@@ -58,7 +57,7 @@ public class PythonDomain implements Domain
 	public DataType inputType(String config, String inputName)
 	{
 		String inputType = PythonDomainUtil.getInputType(config, inputName);
-		System.out.println("TypeCheck " +config + " " + inputName + " " +inputType);
+		log.debug("TypeCheck " +config + " " + inputName + " " +inputType);
 		
 		DataType result = new PythonType(inputType);
 		
@@ -102,7 +101,7 @@ public class PythonDomain implements Domain
 		pythonSource = "\nimport sys\nsys.path.append('src/test/resources/python')\n"+pythonSource;
 		pythonSource+="\n"+underlyingFunction+"([])";
 
-		System.out.println("This is what eventually will be run \n"+pythonSource);
+		log.debug("This is what eventually will be run \n"+pythonSource);
 		// Execute Python source
 		String modifiedPythonFileName = instance.module().name()+".py";
 		
@@ -174,7 +173,7 @@ public class PythonDomain implements Domain
 				
 				fis.close();
 			} catch (FileNotFoundException e) {
-				System.out.println("File output not found: " + e.getMessage());
+				log.debug("File output not found: " + e.getMessage());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -201,7 +200,7 @@ public class PythonDomain implements Domain
 			
 				Packer packer = messagePack.createPacker(fos);
 				
-				// Perhaps there is more elegant way of doing this, based on datatype.
+				// Perhaps there is a proper way of doing this, based on datatype.
 				// Still does not handle list/map/other objects
 				PythonType type = (PythonType) ii.dataType();
 				
@@ -209,6 +208,7 @@ public class PythonDomain implements Domain
 				case BOOLEAN:
 					packer.write((Boolean) ii.value());
 					break;
+				
 				case STRING:
 					packer.write((String) ii.value());
 					break;

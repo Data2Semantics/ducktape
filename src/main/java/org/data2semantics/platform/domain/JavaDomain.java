@@ -17,15 +17,12 @@ import org.data2semantics.platform.annotation.Factory;
 import org.data2semantics.platform.annotation.In;
 import org.data2semantics.platform.annotation.Main;
 import org.data2semantics.platform.annotation.Out;
-import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.InstanceInput;
-import org.data2semantics.platform.core.data.InstanceOutput;
 import org.data2semantics.platform.core.data.JavaType;
 import org.data2semantics.platform.core.data.Output;
-import org.data2semantics.platform.exception.InconsistentWorkflowException;
 import org.data2semantics.platform.exception.WorkflowCodeMatchException;
 import org.data2semantics.platform.util.PlatformUtil;
 
@@ -410,14 +407,14 @@ public class JavaDomain implements Domain
 		}
 
 		// Case where input are defined as parameter of constructors.
-		for(Constructor c : constructors){
+		for(Constructor<?> c : constructors){
 			Annotation [][] parameterAnnotations = c.getParameterAnnotations();
 			for(int i =0; i< parameterAnnotations.length;i++){
 				for(int j=0;j< parameterAnnotations[i].length;j++){
 					if (parameterAnnotations[i][j] instanceof In)
 					{ In in = (In)parameterAnnotations[i][j];
 					  if(in.name().equals(name)){
-						  Class[] paramTypes = c.getParameterTypes();
+						  Class <?>[] paramTypes = c.getParameterTypes();
 						  JavaType jType = new JavaType(paramTypes[i]);
 						  return jType;
 					  }
@@ -435,7 +432,7 @@ public class JavaDomain implements Domain
 						if (parameterAnnotations[i][j] instanceof In)
 						{ In in = (In)parameterAnnotations[i][j];
 						  if(in.name().equals(name)){
-							  Class[] paramTypes = m.getParameterTypes();
+							  Class<?>[] paramTypes = m.getParameterTypes();
 							  JavaType jType = new JavaType(paramTypes[i]);
 							  return jType;
 						  }
@@ -620,7 +617,7 @@ public class JavaDomain implements Domain
 		}
 
 		// Case where input are defined as parameter of constructors.
-		for(Constructor c : constructors){
+		for(Constructor<?> c : constructors){
 			Annotation [][] parameterAnnotations = c.getParameterAnnotations();
 			for(int i =0; i< parameterAnnotations.length;i++){
 				for(int j=0;j< parameterAnnotations[i].length;j++){
@@ -750,7 +747,7 @@ public class JavaDomain implements Domain
 		}
 
 		// Case where input are defined as parameter of constructors.
-		for(Constructor c : constructors){
+		for(Constructor<?> c : constructors){
 			Annotation [][] parameterAnnotations = c.getParameterAnnotations();
 			for(int i =0; i< parameterAnnotations.length;i++){
 				for(int j=0;j< parameterAnnotations[i].length;j++){
@@ -815,7 +812,7 @@ public class JavaDomain implements Domain
 		}
 
 		// Case where input are defined as parameter of constructors.
-		for(Constructor c : constructors){
+		for(Constructor<?> c : constructors){
 			Annotation [][] parameterAnnotations = c.getParameterAnnotations();
 			for(int i =0; i< parameterAnnotations.length;i++){
 				for(int j=0;j< parameterAnnotations[i].length;j++){

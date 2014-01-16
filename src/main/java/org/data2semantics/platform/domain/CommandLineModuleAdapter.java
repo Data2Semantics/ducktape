@@ -3,10 +3,8 @@ package org.data2semantics.platform.domain;
 import java.util.List;
 import java.util.Set;
 
-import org.data2semantics.platform.core.IterationStrategy;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
-import org.data2semantics.platform.core.State;
 import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.Output;

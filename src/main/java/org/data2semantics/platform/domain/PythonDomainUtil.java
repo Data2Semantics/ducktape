@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.data2semantics.platform.exception.WorkflowCodeMatchException;
 import org.msgpack.MessagePack;
 import org.msgpack.unpacker.Unpacker;
 
@@ -64,8 +65,11 @@ public class PythonDomainUtil {
 			File temp = File.createTempFile("temp", ".tmp");
 			
 			dumpToTemporaryFile(fullSource, temp.getAbsolutePath());
-			System.out.println(temp.getAbsolutePath());
+			
 			Process p = PythonDomainUtil.invokePythonScript(temp.getAbsolutePath());
+			StringBuffer error = readInputStreamToBuffer(p.getErrorStream());
+			if(error.length() > 0)
+				throw new WorkflowCodeMatchException(error.toString());
 			
 			File moduleInfoFile = new File("moduleInfo.msg");
 			FileInputStream fis = new FileInputStream(moduleInfoFile);

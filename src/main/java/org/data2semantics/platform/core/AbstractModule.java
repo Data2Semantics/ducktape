@@ -1,7 +1,6 @@
 package org.data2semantics.platform.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,19 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.security.auth.login.AccountNotFoundException;
-
-import org.data2semantics.platform.core.data.DataType;
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.InstanceOutput;
-import org.data2semantics.platform.core.data.JavaType;
 import org.data2semantics.platform.core.data.MultiInput;
 import org.data2semantics.platform.core.data.Output;
 import org.data2semantics.platform.core.data.RawInput;
 import org.data2semantics.platform.core.data.ReferenceInput;
 import org.data2semantics.platform.domain.Domain;
-import org.data2semantics.platform.util.PlatformUtil;
 
 /**
  * This is a representation of a concrete module, which is annotated.
@@ -50,6 +45,8 @@ public abstract class AbstractModule implements Module
 	protected List<ModuleInstance> instances = new ArrayList<ModuleInstance>();
 	
 	protected boolean instantiated = false;
+	
+	private final static Logger LOG=Logger.getLogger(AbstractModule.class.getName());
 	
 	public AbstractModule(Workflow workflow, Domain domain) {
 		this.domain = domain;
@@ -310,7 +307,9 @@ public abstract class AbstractModule implements Module
 								// We are selecting next avlue from the same module instance
 								InstanceOutput refIO = curModuleInstance.output(ri.reference().name()); 
 								nextValue = refIO.value();
-								//System.out.println("Assigning "+ri.reference().module().name()+"."+ri.reference().name()+" into "+name()+"."+coupledMi.name());
+								
+								LOG.info("Assigning "+ri.reference().module().name()+"."+ri.reference().name()+" into "+name()+"."+coupledMi.name());
+								
 								nextUniverse.put(coupledMi, new InstanceInput(this, coupledMi, nextValue, refIO));
 							}
 						}
@@ -320,7 +319,7 @@ public abstract class AbstractModule implements Module
 					
 					} else {
 						// Can't handle multi valued coupled inputs	
-						for(Object v : (List<Object>)nextValue){
+						for(Object v : (List<?>)nextValue){
 					
 							nextUniverse = new LinkedHashMap<Input, InstanceInput>(nextUniverse);
 							nextUniverse.put(originInput, new InstanceInput(this, originInput, v, refInstanceOutput));
@@ -398,7 +397,7 @@ public abstract class AbstractModule implements Module
 					
 					} else {
 							
-						for(Object v : (List<Object>)nextValue){
+						for(Object v : (List<?>)nextValue){
 					
 							nextUniverse = new LinkedHashMap<Input, InstanceInput>(nextUniverse);
 							nextUniverse.put(origin, new InstanceInput(this, origin, v, refInstanceOutput));
@@ -468,11 +467,11 @@ public abstract class AbstractModule implements Module
 		protected Map<String, InstanceOutput> outputs = new LinkedHashMap<String, InstanceOutput>();
 		protected Map<Input,  InstanceInput> universe = new LinkedHashMap<Input, InstanceInput>();
 		
-		protected Branch branch;
 		protected int moduleID=0;
 		protected long creationTime = 0;
 		protected long startTime = 0;
 		protected long endTime = 0;
+		
 		public ModuleInstanceImpl(Map<Input, InstanceInput> universe, int id) {
 			this.moduleID=id;
 			this.universe = universe;
