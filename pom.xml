@@ -76,11 +76,6 @@
 			<version>1.4</version>
 		</dependency>
 		
-       <dependency>
-                      <groupId>org.python</groupId>
-                      <artifactId>jython</artifactId>
-                      <version>2.5.3</version>
-       </dependency>
 
 	</dependencies>
 
@@ -132,26 +127,6 @@
 					</configuration>
 				</plugin>
 				
-				
-				<plugin>
-                    <groupId>net.sf.mavenjython</groupId>
-                    <artifactId>jython-compile-maven-plugin</artifactId>
-                        <version>1.1</version>
-                    <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jython</goal>
-                       </goals>
-                    </execution>
-                    </executions>
-                    <configuration>
-                    <libraries>
-                        <param>msgpack-python</param>
-                    </libraries>
-                    </configuration>
-                </plugin> 
-
 			</plugins>
 	</pluginManagement>
 </build>

@@ -2,29 +2,17 @@ package org.data2semantics.workflow;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.bean.InputBean;
 import org.data2semantics.platform.bean.ModuleBean;
 import org.data2semantics.platform.bean.WorkflowBean;
-import org.data2semantics.platform.core.Workflow;
-import org.data2semantics.platform.util.WorkflowParser;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
 
 public class TestAnnotationWrapper {
-	@Test
-	public void testAnnotationBasedWrapper() throws Exception {
-		
-		WorkflowParser parser = new WorkflowParser();
-		
-		Workflow workflowContainer = parser.parseYAML("src/test/resources/multi-modules.yaml");
-		
-		//workflowContainer.run();
-		
-		//workflowContainer.dumpIntermediateResults();
-		
-	}
 
+	Logger log = Logger.getLogger(TestAnnotationWrapper.class);
 
 	@Test
 	public void testWorkflowBean() {
@@ -49,7 +37,6 @@ public class TestAnnotationWrapper {
 			
 			Yaml ym = new Yaml();
 			
-			System.out.println(ym.dump(wf));
 			String dumpedString = ym.dump(wf);
 			
 			WorkflowBean loadedBean = (WorkflowBean)ym.load(dumpedString);
@@ -62,7 +49,7 @@ public class TestAnnotationWrapper {
 			
 			for(ModuleBean m : loadedBean.getModules()){
 				List<InputBean> inputBeans = m.getInputs();
-				System.out.println("Check " + inputBeans.get(0).getValue());
+				log.debug("Check " + inputBeans.get(0).getValue());
 			}
 			
 	}

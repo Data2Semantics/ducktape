@@ -53,6 +53,7 @@ public class Global implements Serializable
 	 */
 	public static Logger log() { return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME); }
 	
+	
 	/**
 	 * The default random seed. May be changed during runtime.
 	 */

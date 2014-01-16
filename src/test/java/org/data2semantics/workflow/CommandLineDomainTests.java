@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.Workflow;
@@ -21,6 +22,8 @@ import org.junit.Test;
 
 public class CommandLineDomainTests {
 
+	Logger log = Logger.getLogger(CommandLineDomainTests.class);
+	
 	@Test
 	public void testArithConfigFile(){
 			CommandLineDomain domain = new CommandLineDomain();
@@ -58,11 +61,11 @@ public class CommandLineDomainTests {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+					log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -84,11 +87,11 @@ public class CommandLineDomainTests {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+						log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 	}
@@ -106,19 +109,14 @@ public class CommandLineDomainTests {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug( "\nModule : " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+						log.debug( "\nModule " + m.name());
+							
 			}
 		}
 	}
-	@Test
-	public void testProcessBuilder() throws IOException{
-		
-		ProcessBuilder pb = new ProcessBuilder("src/test/resources/commandLine/arith.bat");
-		Process p = pb.start();
-		
-	}
+
 }

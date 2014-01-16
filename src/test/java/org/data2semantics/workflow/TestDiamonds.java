@@ -2,29 +2,23 @@ package org.data2semantics.workflow;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.Workflow;
-import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.InstanceOutput;
-import org.data2semantics.platform.core.data.Output;
 import org.data2semantics.platform.execution.ExecutionProfile;
 import org.data2semantics.platform.execution.LocalExecutionProfile;
 import org.data2semantics.platform.execution.Orchestrator;
-import org.data2semantics.platform.execution.ThreadedLocalExecutionProfile;
-import org.data2semantics.platform.reporting.HTMLReporter;
 import org.data2semantics.platform.resourcespace.ResourceSpace;
-import org.data2semantics.platform.util.PlatformUtil;
 import org.data2semantics.platform.util.WorkflowParser;
 import org.junit.Test;
 
 public class TestDiamonds {
+	
+	Logger log = Logger.getLogger(TestDiamonds.class);
+	
 	@Test
 	public void testDiamond() throws Exception {
 		
@@ -39,11 +33,11 @@ public class TestDiamonds {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+					 log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -70,11 +64,11 @@ public class TestDiamonds {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+						log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -101,11 +95,11 @@ public class TestDiamonds {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+						log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -157,12 +151,12 @@ public class TestDiamonds {
 		for(Module m : workflow.modules()){
 
 			for(ModuleInstance mi :  m.instances()){
-				System.out.println("Instance Input");
+				log.debug("Instance Input");
 				for(InstanceInput io : mi.inputs())
-					System.out.print("   " +io.name()+":"+io.value()+ " ");
-				System.out.println("Instance Output");
+					log.debug("   " +io.name()+":"+io.value()+ " ");
+				log.debug("Instance Output");
 				for(InstanceOutput io : mi.outputs())
-						System.out.print("   " +io.name()+":"+io.value()+ " ");
+					log.debug("   " +io.name()+":"+io.value()+ " ");
 			}
 		}
 		

@@ -186,16 +186,10 @@ public class SimpleModuleWrapper extends AbstractModule{
 		
 		for (String key : resolved)
 			references.remove(key);
-				
-//		if(isReady())
-//			currentState = State.READY;
+			
 	}
 	
-/*	@Override
-	public boolean isReady(){
-		return currentState != State.FINISHED && references.size() == 0;
-	}*/
-	
+
 	public void getNextInputs(ResourceSpace resourceSpace) {
 	
 		

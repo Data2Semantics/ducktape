@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.core.data.DataType;
@@ -26,6 +27,7 @@ public class WorkflowParser {
 	private String workflowDescription;
 	private static Yaml yaml = new Yaml();
 	
+	private static Logger log = Logger.getLogger(WorkflowParser.class);
 	/**
 	 * Perhaps not only the parsed yaml file will be required here as parameter, but also what kind of wrapper.
 	 * @param yamlFile
@@ -156,7 +158,7 @@ public class WorkflowParser {
 			{
 				
 				DataType inputDataType = domain.inputType(sourcePath, inputName);
-				
+
 				String description = domain.inputDescription(sourcePath, inputName);
 				
 				// First handle multi input case, now we include  the case that items in this list this might also be reference.

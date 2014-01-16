@@ -3,7 +3,7 @@ package org.data2semantics.platform.core.data;
 public class CommandLineType implements DataType {
 
 	public static enum Types {
-		INTEGER("cli_integer"), STRING("cli_string");
+		INTEGER("integer"), STRING("string");
 
 		String v;
 

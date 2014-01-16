@@ -1,10 +1,11 @@
 package org.data2semantics.workflow;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.Workflow;
@@ -22,7 +23,8 @@ import org.msgpack.packer.Packer;
 
 public class TestPythonDomain {
 
-
+	Logger log = Logger.getLogger(TestPythonDomain.class);
+	
 	@Test
 	public void testHelloWorld() throws Exception {
 		
@@ -37,11 +39,11 @@ public class TestPythonDomain {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+					log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -63,11 +65,11 @@ public class TestPythonDomain {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+					log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -77,7 +79,7 @@ public class TestPythonDomain {
 	public void testModuleInfo1() throws IOException{
 		
 		ModuleInfo info = PythonDomainUtil.getDucktapeModulesInfoFromPythonScript("src/test/resources/python/count_triples.py");
-		System.out.println(info);
+		log.debug(info);
 	
 	}
 	
@@ -85,7 +87,7 @@ public class TestPythonDomain {
 	public void testModuleInfo2() throws IOException{
 		
 		ModuleInfo info = PythonDomainUtil.getDucktapeModulesInfoFromPythonScript("src/test/resources/python/hello.py");
-		System.out.println(info);
+		log.debug(info);
 	
 	}
 	

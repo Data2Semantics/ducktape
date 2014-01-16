@@ -1,12 +1,9 @@
 package org.data2semantics.workflow;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.Workflow;
@@ -15,8 +12,6 @@ import org.data2semantics.platform.execution.ExecutionProfile;
 import org.data2semantics.platform.execution.LocalExecutionProfile;
 import org.data2semantics.platform.execution.Orchestrator;
 import org.data2semantics.platform.execution.ThreadedLocalExecutionProfile;
-import org.data2semantics.platform.reporting.CSVReporter;
-import org.data2semantics.platform.reporting.HTMLReporter;
 import org.data2semantics.platform.resourcespace.ResourceSpace;
 import org.data2semantics.platform.util.PlatformUtil;
 import org.data2semantics.platform.util.WorkflowParser;
@@ -24,7 +19,8 @@ import org.junit.Test;
 
 public class TestIterator {
 
-
+	Logger log = Logger.getLogger(TestIterator.class);
+	
 	@Test
 	public void testIterators() throws Exception {
 		
@@ -39,11 +35,11 @@ public class TestIterator {
 		platformOrchestrator.orchestrate();
 		
 		for(Module m : workflow.modules()){
-			System.out.println("\nModule " + m.name());
+			log.debug("\nModule " + m.name());
 			
 			for(ModuleInstance mi :  m.instances()){
 					for(InstanceOutput io : mi.outputs())
-					System.out.print(io.name()+":"+io.value()+ " ");
+					log.debug(io.name()+":"+io.value()+ " ");
 			}
 		}
 		
@@ -55,7 +51,7 @@ public class TestIterator {
 		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/AnAdder.yaml");
 		
 		
-		System.out.println("Check Workflow " +workflow);
+		log.debug("Check Workflow " +workflow);
 		
 		ResourceSpace resourceSpace = new ResourceSpace();
 		
@@ -73,7 +69,7 @@ public class TestIterator {
 		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/AMultiplier.yaml");
 		
 		
-		System.out.println("Check Workflow " +workflow);
+		log.debug("Check Workflow " +workflow);
 		
 		ResourceSpace resourceSpace = new ResourceSpace();
 		
@@ -86,7 +82,7 @@ public class TestIterator {
 		
 		for(ModuleInstance mi :  workflow.modules().get(0).instances())
 		for(InstanceOutput io : mi.outputs())
-			System.out.print(io.value()+ " ");
+			log.debug(io.value()+ " ");
 		
 		
 	}
@@ -97,7 +93,7 @@ public class TestIterator {
 		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/AListSum.yaml");
 		
 		
-		System.out.println("Check Workflow " +workflow);
+		log.debug("Check Workflow " +workflow);
 		
 		ResourceSpace resourceSpace = new ResourceSpace();
 		
@@ -108,7 +104,7 @@ public class TestIterator {
 		
 		platformOrchestrator.orchestrate();
 		
-		System.out.println(workflow.modules().get(0).instances().get(0).outputs().get(0).value());
+		log.debug(workflow.modules().get(0).instances().get(0).outputs().get(0).value());
 		
 		
 	}
@@ -129,8 +125,8 @@ public class TestIterator {
 			
 			for(Object[] x : unrolled){
 				for(Object y : x)
-					System.out.print(y+" ");
-				System.out.println();
+					log.debug(y+" ");
+			
 			}
 	}
 	
