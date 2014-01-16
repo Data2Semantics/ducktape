@@ -1,5 +1,5 @@
 # Ducktape Experimental Platform 
-### *Alpha Release*
+
 
 
 ##Background
