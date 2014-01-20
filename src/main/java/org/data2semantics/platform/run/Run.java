@@ -30,10 +30,10 @@ public class Run
 	@Option(name="--profile", usage="Execution profile to be used LOCAL THREADED HADOOP (default: LOCAL) ")
 	private static ExecutionProfiles execProfile = ExecutionProfiles.LOCAL;
 	  
-    @Option(name="--classpath", usage="A directory containing source code and resources to be loaded." +
+    @Option(name="--domainpath", usage="A directory containing source code and resources to be loaded." +
     		" Each source file should be in a directory that matches the name of its controller " +
     		"(ie. java files should be in a directory called 'java'). (default: none)")
-	private static String classPath = "";
+	private static String domainPath = "";
 
     @Option(name="--output", usage="The output directory (default: the working directory)")    
 	private static File output = new File(".");
@@ -74,6 +74,8 @@ public class Run
     	
     	// * Scan the classpath for any Domains and add them dynamically to the 
     	//   global Domain store.
+    	
+    	DomainScanner domainScanner = new DomainScanner(domainPath);
     	
     	// * Read the workflow description from a yaml file into a map
     	

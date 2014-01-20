@@ -150,5 +150,4 @@ public interface Domain
 	
 	public boolean printOutput(String source, String input);
 
-
 }

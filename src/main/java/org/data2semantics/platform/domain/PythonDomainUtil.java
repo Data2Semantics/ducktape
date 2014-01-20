@@ -46,8 +46,9 @@ public class PythonDomainUtil {
 	
 	static final String DUCKTAPE_PYTHON_MODULE = "src/test/resources/python/";
 	static final String APPEND_DUCKTAPE_LOCATION = "\nimport sys"+
-												   "\nsys.path.append('"+DUCKTAPE_PYTHON_MODULE+"')";
-	
+												   "\nsys.path.append('"+DUCKTAPE_PYTHON_MODULE+"')" +
+												   "\nsys.path.append('"+System.getProperty("PYTHONPATH")+"')" ;
+		
 	static final String IMPORT_DUCKTAPE = "\nimport ducktape"+
 										  "\nimport msgpack";
 	

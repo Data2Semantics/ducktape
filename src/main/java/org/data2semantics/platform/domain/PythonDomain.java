@@ -98,7 +98,10 @@ public class PythonDomain implements Domain
 		
 		//If there is a better way to do this.
 		String underlyingFunction = PythonDomainUtil.getModuleFunctionName(pythonSourceFile);
-		pythonSource = "\nimport sys\nsys.path.append('src/test/resources/python')\n"+pythonSource;
+		pythonSource += "\nimport sys" ;
+		pythonSource +=	"\nsys.path.append('src/test/resources/python')\n"+pythonSource;
+		pythonSource +=	"\nsys.path.append('"+System.getProperty("PYTHONPATH")+"')\n";
+		
 		pythonSource+="\n"+underlyingFunction+"([])";
 
 		log.debug("This is what eventually will be run \n"+pythonSource);
