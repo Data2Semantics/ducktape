@@ -56,8 +56,9 @@ public class DomainScanner {
 				if(sd.getName().equals("python")){
 					//Python domain will later on use this system property to add to system path when executing python module
 					try {
-						System.setProperty("PYTHONPATH", sd.getPath());
-						log.info("PYTHON PATH " + sd.getCanonicalPath());
+						String pythonpath = sd.getCanonicalPath();
+						pythonpath = pythonpath.replaceAll("\\\\","\\\\\\\\");
+						System.setProperty("PYTHONPATH", pythonpath);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

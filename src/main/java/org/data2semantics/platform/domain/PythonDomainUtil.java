@@ -56,8 +56,8 @@ public class PythonDomainUtil {
 	public static ModuleInfo getDucktapeModulesInfoFromPythonScript(String pythonSourceLocation){
 		
 		ModuleInfo result = new ModuleInfo();
-		
-		
+		File moduleInfoFile = null;
+		FileInputStream fis = null;
 		try {
 			
 			String sourceContent = getFileContent(pythonSourceLocation);
@@ -72,14 +72,16 @@ public class PythonDomainUtil {
 			if(error.length() > 0)
 				throw new WorkflowCodeMatchException(error.toString());
 			
-			File moduleInfoFile = new File("moduleInfo.msg");
-			FileInputStream fis = new FileInputStream(moduleInfoFile);
+			moduleInfoFile = new File("moduleInfo.msg");
+			fis = new FileInputStream(moduleInfoFile);
 			
 			MessagePack messagePack = new MessagePack();
 			Unpacker unpacker = messagePack.createUnpacker(fis);
-			
 			result = unpacker.read(ModuleInfo.class);
-			
+			if(fis != null)
+				fis.close();
+			if(moduleInfoFile != null)
+				moduleInfoFile.delete();
 		}
 		catch(IOException ioe){
 			ioe.printStackTrace();

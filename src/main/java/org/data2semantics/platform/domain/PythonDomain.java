@@ -123,9 +123,18 @@ public class PythonDomain implements Domain
 		
 		retrievePackedOutputsBackfromFile(instance, results);
 		
+		cleanupPackedInputFiles(instance);
+		
+		// Clean up temporary modified file.
+		File dumpFile = new File(modifiedPythonFileName);
+		if(dumpFile.isFile()){
+			dumpFile.delete();
+		}
 		
 		return true;
 	}
+
+
 
 	private void retrievePackedOutputsBackfromFile(ModuleInstance instance,
 			Map<String, Object> results) {
@@ -242,9 +251,20 @@ public class PythonDomain implements Domain
 
 	}
 
-
-
-
+	
+	/**
+	 * Cleaning up files created in previous dumps.
+	 * @param instance
+	 */
+	private void cleanupPackedInputFiles(ModuleInstance instance) {
+		for(InstanceInput ii : instance.inputs()){
+			String currentInputFileName = ii.name();
+			File fi = new File(currentInputFileName);
+			if(fi.isFile())
+				fi.delete();
+		}
+		
+	}
 
 	@Override
 	public String inputDescription(String source, String inputName)
