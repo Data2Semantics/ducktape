@@ -165,7 +165,7 @@ public class PythonDomainUtil {
 
 	public static String getOutputType(String config, String outputName) {
 		ModuleInfo info = getDucktapeModulesInfoFromPythonScript(config);
-		
+
 		return info.outputType(outputName);
 	}
 

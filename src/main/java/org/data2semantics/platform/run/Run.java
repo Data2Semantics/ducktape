@@ -68,6 +68,10 @@ public class Run
     	if(! file.exists())
     		usageExit("Workflow file ("+file+") does not exist.", parser);
     	
+    	if(!output.exists()){
+    		output.mkdir();
+    	}
+    	
     	// -- Beyond this point, errors are not the user's fault, and should not
     	//    cause a usage print. 
     	
@@ -76,6 +80,7 @@ public class Run
     	//   global Domain store.
     	
     	DomainScanner domainScanner = new DomainScanner(domainPath);
+    	domainScanner.scanDomains();
     	
     	// * Read the workflow description from a yaml file into a map
     	

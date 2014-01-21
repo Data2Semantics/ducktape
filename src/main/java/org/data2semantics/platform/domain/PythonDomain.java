@@ -153,7 +153,7 @@ public class PythonDomain implements Domain
 				// Use the python type to determine how to unpack this stuff.
 				
 				PythonType type = (PythonType)io.dataType();
-
+				
 				switch(type.getType()){
 				
 					case BOOLEAN:
@@ -262,6 +262,12 @@ public class PythonDomain implements Domain
 		for(InstanceInput ii : instance.inputs()){
 			String currentInputFileName = ii.name();
 			File fi = new File(currentInputFileName);
+			if(fi.isFile())
+				fi.delete();
+		}
+		for(InstanceOutput ii : instance.outputs()){
+			String currentOutputFileName = ii.name();
+			File fi = new File(currentOutputFileName);
 			if(fi.isFile())
 				fi.delete();
 		}

@@ -24,9 +24,11 @@ public class DomainScanner {
 	
 	public DomainScanner(String classPath) {
 		baseDir = new File(classPath);
-		process(baseDir);
 	}
 	
+	public void scanDomains(){
+		process(baseDir);		
+	}
 	
 	static FileFilter directoryFilter = new FileFilter() {
 		@Override
