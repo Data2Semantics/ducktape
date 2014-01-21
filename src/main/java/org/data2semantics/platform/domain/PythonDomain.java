@@ -94,14 +94,17 @@ public class PythonDomain implements Domain
 		
 		// Source modification.
 		String pythonSourceFile =instance.module().source();
-		String pythonSource = PythonDomainUtil.getFileContent(pythonSourceFile);
+		String pythonSource = "";
+		
+	
+		pythonSource += "\nimport sys" ;
+		pythonSource +=	"\nsys.path.append('src/test/resources/python')\n";
+		pythonSource +=	"\nsys.path.append('"+System.getProperty("PYTHONPATH")+"')\n";
+		pythonSource += PythonDomainUtil.getFileContent(pythonSourceFile);
 		
 		//If there is a better way to do this.
 		String underlyingFunction = PythonDomainUtil.getModuleFunctionName(pythonSourceFile);
-		pythonSource += "\nimport sys" ;
-		pythonSource +=	"\nsys.path.append('src/test/resources/python')\n"+pythonSource;
-		pythonSource +=	"\nsys.path.append('"+System.getProperty("PYTHONPATH")+"')\n";
-		
+	
 		pythonSource+="\n"+underlyingFunction+"([])";
 
 		log.debug("This is what eventually will be run \n"+pythonSource);
@@ -116,7 +119,6 @@ public class PythonDomain implements Domain
 			if(errorsStream.length() > 0)
 				errors.add(errorsStream.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -126,10 +128,7 @@ public class PythonDomain implements Domain
 		cleanupPackedInputFiles(instance);
 		
 		// Clean up temporary modified file.
-		File dumpFile = new File(modifiedPythonFileName);
-		if(dumpFile.isFile()){
-			dumpFile.delete();
-		}
+
 		
 		return true;
 	}
