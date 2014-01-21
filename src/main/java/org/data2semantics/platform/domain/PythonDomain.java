@@ -128,7 +128,10 @@ public class PythonDomain implements Domain
 		cleanupPackedInputFiles(instance);
 		
 		// Clean up temporary modified file.
-
+		File dumpFile = new File(modifiedPythonFileName);
+		if(dumpFile.isFile()){
+				dumpFile.delete();
+		}
 		
 		return true;
 	}
