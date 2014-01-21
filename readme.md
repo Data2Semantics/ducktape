@@ -222,10 +222,13 @@ The source code is available in [Github](http://github.com/data2semantics/duckta
 
         mvn exec:java -Dexec.mainClass=org.data2semantics.platform.run.Run
 
+ * For python modules, msgpack https://pypi.python.org/pypi/msgpack-python needs to be installed:
+ 	pip install msgpack-python 
+
+ * Sample deployment tarball is provided [here](sample.tar.gz), download, untar and play with simple modules/workflows.
 
 ##Acknowledgments 
 
 This deliverable was supported by the Dutch national program [COMMIT](http://www.commit-nl.nl/)
-
 
 
