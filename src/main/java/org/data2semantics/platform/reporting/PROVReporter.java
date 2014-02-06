@@ -49,6 +49,30 @@ public class PROVReporter implements Reporter {
 	private File root;
 
 	
+	static	ValueFactory factory = ValueFactoryImpl.getInstance();		
+	static	URI eURI = factory.createURI(PROV_NAMESPACE, "Entity");
+	static	URI acURI = factory.createURI(PROV_NAMESPACE, "Activity");
+	static	URI usedURI = factory.createURI(PROV_NAMESPACE, "used");
+	static	URI wgbURI  = factory.createURI(PROV_NAMESPACE, "wasGeneratedBy");
+	static	URI	genAtURI  = factory.createURI(PROV_NAMESPACE, "generatedAtTime");
+	static	URI	startAtURI  = factory.createURI(PROV_NAMESPACE, "startedAtTime");
+	static	URI	endAtURI  = factory.createURI(PROV_NAMESPACE, "endedAtTime");
+		
+	static	URI valueURI = factory.createURI(NAMESPACE, "value");
+		
+	static	URI agURI = factory.createURI(PROV_NAMESPACE, "Agent");
+	static	URI watURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
+	static	URI wawURI  = factory.createURI(PROV_NAMESPACE, "wasAssociatedWith");
+		
+	static	URI planURI  = factory.createURI(PROV_NAMESPACE, "Plan");
+	static	URI assoURI  = factory.createURI(PROV_NAMESPACE, "Association");	
+	static	URI qualAssoURI  = factory.createURI(PROV_NAMESPACE, "qualifiedAssociation");	
+		
+	static	URI hadPlanURI  = factory.createURI(PROV_NAMESPACE, "hadPlan");
+	static	URI hadAgentURI  = factory.createURI(PROV_NAMESPACE, "agent");
+			
+	
+	
 	public PROVReporter(Workflow workflow, File root) {
 		super();
 		this.workflow = workflow;
@@ -56,6 +80,9 @@ public class PROVReporter implements Reporter {
 		root.mkdirs();
 	}
 
+	public Model getPROVModel() throws IOException{
+		return writePROV();
+	}
 	@Override
 	public void report() throws IOException {
 		writePROV();
@@ -66,42 +93,23 @@ public class PROVReporter implements Reporter {
 		return workflow;
 	}
 	
-	private void writePROV() throws IOException {
-		ValueFactory factory = ValueFactoryImpl.getInstance();		
+	private Model writePROV() throws IOException {
+
 		Model stmts = new LinkedHashModel();
 		FileInputStream fis = new FileInputStream(workflow.file());
 		String workflowMD5sum = DigestUtils.md5Hex(fis);
 		long currentTimeMilis = System.currentTimeMillis();
 		
 		// Define all the URI's that we are going to (re)use
-		URI eURI = factory.createURI(PROV_NAMESPACE, "Entity");
-		URI acURI = factory.createURI(PROV_NAMESPACE, "Activity");
-		URI usedURI = factory.createURI(PROV_NAMESPACE, "used");
-		URI wgbURI  = factory.createURI(PROV_NAMESPACE, "wasGeneratedBy");
-		URI	genAtURI  = factory.createURI(PROV_NAMESPACE, "generatedAtTime");
-		URI	startAtURI  = factory.createURI(PROV_NAMESPACE, "startedAtTime");
-		URI	endAtURI  = factory.createURI(PROV_NAMESPACE, "endedAtTime");
-		
-		URI valueURI = factory.createURI(NAMESPACE, "value");
-		
-		URI agURI = factory.createURI(PROV_NAMESPACE, "Agent");
-		URI watURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
-		URI wawURI  = factory.createURI(PROV_NAMESPACE, "wasAssociatedWith");
-		
-		URI planURI  = factory.createURI(PROV_NAMESPACE, "Plan");
-		URI assoURI  = factory.createURI(PROV_NAMESPACE, "Association");	
-		URI qualAssoURI  = factory.createURI(PROV_NAMESPACE, "qualifiedAssociation");	
-		
-		URI hadPlanURI  = factory.createURI(PROV_NAMESPACE, "hadPlan");
-		URI hadAgentURI  = factory.createURI(PROV_NAMESPACE, "agent");
-			
+
 		URI platformURI = factory.createURI(NAMESPACE + "ducktape/", InetAddress.getLocalHost().getHostName() + "/" + Global.getSerialversionuid());
 		URI workflowURI = factory.createURI(NAMESPACE + "workflow/", workflow.file().getAbsolutePath() + "/" + workflowMD5sum);
 			
 		// The software is the agent and the workflow is the plan
-		stmts.add(factory.createStatement(platformURI, RDF.TYPE, agURI));
+		stmts.add(factory.createStatement(platformURI, RDF.TYPE, agURI)); 
 		stmts.add(factory.createStatement(workflowURI, RDF.TYPE, planURI));
 		
+		// Labels for the platform (ducktape) and current workflow
 		stmts.add(factory.createStatement(platformURI, RDFS.LABEL, 
 				Literals.createLiteral(factory, "ducktape on: " + InetAddress.getLocalHost().getHostName() + ", versionID: " + Global.getSerialversionuid())));
 		stmts.add(factory.createStatement(workflowURI, RDFS.LABEL, 
@@ -115,10 +123,13 @@ public class PROVReporter implements Reporter {
 			for (ModuleInstance mi : module.instances()) {
 				// Create provenance for the module (as an activity)
 				URI miURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID());
+				
+				// ** miURI is activity ** //
 				stmts.add(factory.createStatement(miURI, RDF.TYPE, acURI)); // Activity
 				stmts.add(factory.createStatement(miURI, startAtURI, Literals.createLiteral(factory, new Date(mi.startTime())))); // Start time
 				stmts.add(factory.createStatement(miURI, endAtURI, Literals.createLiteral(factory, new Date(mi.endTime())))); // end time			
 				stmts.add(factory.createStatement(miURI, wawURI, platformURI)); // wasAssociatedWith
+				stmts.add(factory.createStatement(miURI, RDFS.LABEL, Literals.createLiteral(factory, module.name()))); // This activity is labeled as its module name.
 				
 				// qualified Association
 				BNode bn = factory.createBNode();
@@ -130,7 +141,10 @@ public class PROVReporter implements Reporter {
 				// Create provenance for the outputs (as entities)
 				for (InstanceOutput io : mi.outputs()) {
 					URI ioURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID() + "/output/" + io.name());
+					
+					// ** ioURI is entity** //
 					stmts.add(factory.createStatement(ioURI, RDF.TYPE, eURI)); // entity
+					// ** ioURI was Generated By miURI ** //
 					stmts.add(factory.createStatement(ioURI, wgbURI, miURI)); // wasGeneratedBy
 					stmts.add(factory.createStatement(ioURI, genAtURI, Literals.createLiteral(factory, new Date(io.creationTime())))); // generated at time
 					stmts.add(factory.createStatement(ioURI, watURI, platformURI)); // wasAttributedTo
@@ -179,6 +193,8 @@ public class PROVReporter implements Reporter {
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return stmts;
 	}
 
 }

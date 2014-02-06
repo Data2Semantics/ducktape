@@ -3,15 +3,15 @@ workflow:
    modules:
 
     - module:
-        name: A
+        name: ModuleA
         source: org.data2semantics.modules.AdderModule
         inputs:
-            first:  [2,3]
-            second: 1
+            first:  [3,4,5]
+            second: [7,8,9]
+  
     - module:
-        name: B
+        name: ModuleB
         source: org.data2semantics.modules.AdderModule
         inputs:
-            first:  
-               reference: A.result
-            second: [4,5]
+            first:  [11,12,13]
+            second: [14,15]

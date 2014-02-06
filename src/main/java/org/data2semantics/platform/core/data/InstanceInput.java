@@ -14,6 +14,8 @@ public class InstanceInput extends Input
 	private Input original;
 	private ModuleInstance instance;
 	private Object value;
+	
+	// Reference to another instance's output
 	private InstanceOutput instanceOutput;
 	
 	public InstanceInput(Module module, Input original, Object value)
@@ -64,6 +66,10 @@ public class InstanceInput extends Input
 		return instance;
 	}
 	
+	/**
+	 * Reffered instance output. If this is not null means that this instance input is obtained from from another module's instance output.
+	 * @return
+	 */
 	public InstanceOutput instanceOutput(){
 		return instanceOutput;
 	}
