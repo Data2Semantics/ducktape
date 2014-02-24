@@ -55,6 +55,9 @@ public interface Module
 		 */
 		public boolean coupledInputs(String x, String y);
 		
+		
+		public boolean isDataSet(String inputName);
+		
 		/**
 		 * Function to get input with argument name
 		 * @param name the name of the input requested

@@ -205,4 +205,9 @@ public class SimpleModuleWrapper extends AbstractModule{
 		String result = "\nName : "+name + " Source : " + myclass;
 		return result;
 	}
+
+	@Override
+	public boolean isDataSet(String inputName) {
+		return dataSets.contains(inputName);
+	}
 }

@@ -59,7 +59,8 @@ public class PROVReporter implements Reporter {
 	static	URI	endAtURI  = factory.createURI(PROV_NAMESPACE, "endedAtTime");
 		
 	static	URI valueURI = factory.createURI(NAMESPACE, "value");
-		
+	static	URI datasetURI = factory.createURI(NAMESPACE, "Dataset");
+	
 	static	URI agURI = factory.createURI(PROV_NAMESPACE, "Agent");
 	static	URI watURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
 	static	URI wawURI  = factory.createURI(PROV_NAMESPACE, "wasAssociatedWith");
@@ -176,6 +177,8 @@ public class PROVReporter implements Reporter {
 							
 					stmts.add(factory.createStatement(iiURI, RDF.TYPE, eURI)); // entity
 					stmts.add(factory.createStatement(miURI, usedURI, iiURI)); // used					
+				
+					stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
 				}
 			}
 		}

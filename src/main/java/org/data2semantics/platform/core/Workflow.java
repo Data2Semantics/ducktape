@@ -275,6 +275,17 @@ public final class Workflow {
 
 			return this;
 		}
+		
+		public WorkflowBuilder datasetsInputs(String moduleName, List<String> datasetInputs){
+			check();   
+			if(! workflow.modules.containsKey(moduleName))
+				throw new IllegalArgumentException("Module ("+moduleName+") does not exist.");
+			
+			ModuleImpl module = workflow.modules.get(moduleName);
+			module.addDataSets(datasetInputs);
+			
+			return this;
+		}
 		/**
 		 * Returns the workflow object
 		 * 
@@ -338,6 +349,13 @@ public final class Workflow {
 				
 				module.addMultiRefInput(inputName, description, multiValues, inputType);
 					
+			}
+			
+			// Set boolean flag for individual inputs
+			for (Module m : workflow.modules()){
+				for(Input i : m.inputs()){
+					i.dataset(m.isDataSet(i.name()));
+				}
 			}
 			
 			// * Kill the WorkflowBuilder
@@ -425,10 +443,15 @@ public final class Workflow {
 		private static class ModuleImpl extends AbstractModule 
 		{
 
+			
 			public ModuleImpl(Workflow workflow, String name, Domain domain)
 			{
 				super(workflow, domain);
 				this.name = name;
+			}
+
+			public void addDataSets(List<String> datasetInputs) {
+				dataSets.addAll(datasetInputs);
 			}
 
 			public void addCoupledInputs(List<String> cInputs){
@@ -528,6 +551,11 @@ public final class Workflow {
 					throw new IllegalArgumentException("Module ("+name()+") already contains input with the given name ("+name+")");
 				
 				inputs.put(name, new RawInput(value,  name, description,  type, this, print));
+			}
+
+			@Override
+			public boolean isDataSet(String inputName) {
+				return dataSets.contains(inputName);
 			}
 
 

@@ -137,6 +137,12 @@ public class CommandLineModuleAdapter  implements Module {
 		return false;
 	}
 
+	@Override
+	public boolean isDataSet(String inputName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 
 	

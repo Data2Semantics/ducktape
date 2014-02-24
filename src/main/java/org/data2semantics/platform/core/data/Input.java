@@ -9,6 +9,7 @@ public abstract class Input implements Data
 	private DataType dataType;
 	private Module module;
 	private boolean print = true;
+	private boolean isDataset = false;
 	
 	public Input(String name, String description,  DataType dataType, Module module)
 	{
@@ -55,6 +56,14 @@ public abstract class Input implements Data
 	public boolean print()
 	{
 		return print;
+	}
+	
+	public boolean isDataset(){
+		return isDataset;
+	}
+	
+	public void dataset(boolean isDataset){
+		this.isDataset = isDataset;
 	}
 
 }

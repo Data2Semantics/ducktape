@@ -8,6 +8,7 @@ workflow:
          inputs:
              first:  [1,2]
              second: 1
+             
      - module:
          name: B
          source: org.data2semantics.modules.AdderModule
@@ -28,4 +29,10 @@ workflow:
                 - reference: B.product
                     
          couple:
-            - [first, second]          
+            - [first, second]       
+            
+         datasets:
+            - first
+            
+            
+      
