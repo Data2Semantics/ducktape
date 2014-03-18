@@ -71,6 +71,12 @@ public class PROVReporter implements Reporter {
 		
 	static	URI hadPlanURI  = factory.createURI(PROV_NAMESPACE, "hadPlan");
 	static	URI hadAgentURI  = factory.createURI(PROV_NAMESPACE, "agent");
+	
+	static URI inputURI = factory.createURI(NAMESPACE, "Input");
+	static URI outputURI = factory.createURI(NAMESPACE, "Output");
+	static URI moduleURI = factory.createURI(NAMESPACE, "Module");
+	
+	static URI instanceOfURI = factory.createURI(NAMESPACE, "instanceOf");
 			
 	
 	
@@ -119,18 +125,27 @@ public class PROVReporter implements Reporter {
 	
 		
 		String moduleInstanceSumTimestamp = "module/instance/"+InetAddress.getLocalHost().getHostName()+"/"+workflowMD5sum+"/"+currentTimeMilis+"/";
+		String moduleClassSumTimestamp = "module/class/"+InetAddress.getLocalHost().getHostName()+"/"+workflowMD5sum+"/"+currentTimeMilis+"/";
+		
 		for (Module module : workflow.modules()) {
 			
 			for (ModuleInstance mi : module.instances()) {
 				// Create provenance for the module (as an activity)
 				URI miURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID());
+				URI mcURI = factory.createURI(NAMESPACE + moduleClassSumTimestamp, module.name());
+				
 				
 				// ** miURI is activity ** //
 				stmts.add(factory.createStatement(miURI, RDF.TYPE, acURI)); // Activity
 				stmts.add(factory.createStatement(miURI, startAtURI, Literals.createLiteral(factory, new Date(mi.startTime())))); // Start time
 				stmts.add(factory.createStatement(miURI, endAtURI, Literals.createLiteral(factory, new Date(mi.endTime())))); // end time			
 				stmts.add(factory.createStatement(miURI, wawURI, platformURI)); // wasAssociatedWith
-				stmts.add(factory.createStatement(miURI, RDFS.LABEL, Literals.createLiteral(factory, module.name()))); // This activity is labeled as its module name.
+				stmts.add(factory.createStatement(miURI, RDFS.LABEL, Literals.createLiteral(factory, module.name() + mi.moduleID()))); // This activity is labeled as its module name.
+				
+				stmts.add(factory.createStatement(miURI,RDF.TYPE, moduleURI));
+				stmts.add(factory.createStatement(miURI, instanceOfURI, mcURI));
+				stmts.add(factory.createStatement(mcURI, RDFS.LABEL, Literals.createLiteral(factory, module.name())));
+				
 				
 				// qualified Association
 				BNode bn = factory.createBNode();
@@ -142,6 +157,7 @@ public class PROVReporter implements Reporter {
 				// Create provenance for the outputs (as entities)
 				for (InstanceOutput io : mi.outputs()) {
 					URI ioURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID() + "/output/" + io.name());
+					URI coURI = factory.createURI(NAMESPACE + moduleClassSumTimestamp, module.name() + "/output/" + io.name());
 					
 					// ** ioURI is entity** //
 					stmts.add(factory.createStatement(ioURI, RDF.TYPE, eURI)); // entity
@@ -149,6 +165,10 @@ public class PROVReporter implements Reporter {
 					stmts.add(factory.createStatement(ioURI, wgbURI, miURI)); // wasGeneratedBy
 					stmts.add(factory.createStatement(ioURI, genAtURI, Literals.createLiteral(factory, new Date(io.creationTime())))); // generated at time
 					stmts.add(factory.createStatement(ioURI, watURI, platformURI)); // wasAttributedTo
+					
+					stmts.add(factory.createStatement(ioURI, RDF.TYPE, outputURI));
+					stmts.add(factory.createStatement(ioURI, instanceOfURI, coURI));
+					stmts.add(factory.createStatement(coURI, RDFS.LABEL, Literals.createLiteral(factory, io.name())));
 					
 					// If we can create a literal of the value, save it and create a rdfs-label
 					if (Literals.canCreateLiteral(io.value())) {
@@ -162,25 +182,33 @@ public class PROVReporter implements Reporter {
 				for (InstanceInput ii : mi.inputs()) {
 					URI iiURI = null;
 					
-					if (ii.instanceOutput() != null) {
+					if (ii.instanceOutput() != null) { // It is also an output somewhere
 						iiURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, ii.instanceOutput().module().name() 
 								+ ii.instanceOutput().instance().moduleID() + "/output/" + ii.instanceOutput().name());
 					} else {
 						iiURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID()
 								+ "/input/" + ii.name());
+						URI ciURI = factory.createURI(NAMESPACE + moduleClassSumTimestamp, module.name() + "/input/" + ii.name());
+						
+						stmts.add(factory.createStatement(iiURI, instanceOfURI, ciURI));
+						stmts.add(factory.createStatement(ciURI, RDFS.LABEL, Literals.createLiteral(factory, ii.name())));
 						
 						// If we can create a literal
 						if (Literals.canCreateLiteral(ii.value())) {
 							stmts.add(factory.createStatement(iiURI, valueURI, Literals.createLiteral(factory, ii.value())));
-							stmts.add(factory.createStatement(iiURI, RDFS.LABEL, Literals.createLiteral(factory, ii)));
-							
+							stmts.add(factory.createStatement(iiURI, RDFS.LABEL, Literals.createLiteral(factory, ii)));			
 						}			
 					}
 							
 					stmts.add(factory.createStatement(iiURI, RDF.TYPE, eURI)); // entity
 					stmts.add(factory.createStatement(miURI, usedURI, iiURI)); // used					
 				
-					stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
+					stmts.add(factory.createStatement(iiURI, RDF.TYPE, inputURI));
+					
+					// Should check property from the YAML whether it is a dataset
+					if (ii.isDataset()) {
+						stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
+					}
 				}
 			}
 		}
