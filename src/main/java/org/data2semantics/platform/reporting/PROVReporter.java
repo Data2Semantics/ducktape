@@ -154,6 +154,7 @@ public class PROVReporter implements Reporter {
 					if (Literals.canCreateLiteral(io.value())) {
 						stmts.add(factory.createStatement(ioURI, valueURI, Literals.createLiteral(factory, io.value())));
 						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io)));
+						
 					}
 				}
 				
@@ -163,7 +164,7 @@ public class PROVReporter implements Reporter {
 					
 					if (ii.instanceOutput() != null) {
 						iiURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, ii.instanceOutput().module().name() 
-								+ ii.instanceOutput().instance().moduleID() + "/output/" + ii.name());
+								+ ii.instanceOutput().instance().moduleID() + "/output/" + ii.instanceOutput().name());
 					} else {
 						iiURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID()
 								+ "/input/" + ii.name());
@@ -172,6 +173,7 @@ public class PROVReporter implements Reporter {
 						if (Literals.canCreateLiteral(ii.value())) {
 							stmts.add(factory.createStatement(iiURI, valueURI, Literals.createLiteral(factory, ii.value())));
 							stmts.add(factory.createStatement(iiURI, RDFS.LABEL, Literals.createLiteral(factory, ii)));
+							
 						}			
 					}
 							
