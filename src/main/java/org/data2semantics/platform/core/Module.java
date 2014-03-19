@@ -58,6 +58,8 @@ public interface Module
 		
 		public boolean isDataSet(String inputName);
 		
+		public boolean isResult(String outputName);
+		
 		/**
 		 * Function to get input with argument name
 		 * @param name the name of the input requested

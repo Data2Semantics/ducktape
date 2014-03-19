@@ -60,6 +60,7 @@ public class PROVReporter implements Reporter {
 		
 	static	URI valueURI = factory.createURI(NAMESPACE, "value");
 	static	URI datasetURI = factory.createURI(NAMESPACE, "Dataset");
+	static	URI resultURI = factory.createURI(NAMESPACE, "Result");
 	
 	static	URI agURI = factory.createURI(PROV_NAMESPACE, "Agent");
 	static	URI watURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
@@ -173,8 +174,13 @@ public class PROVReporter implements Reporter {
 					// If we can create a literal of the value, save it and create a rdfs-label
 					if (Literals.canCreateLiteral(io.value())) {
 						stmts.add(factory.createStatement(ioURI, valueURI, Literals.createLiteral(factory, io.value())));
-						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io)));
+						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io)));		
+					}
+					
+					if (io.isResult()) {
+						Global.log().info(io.name() + " is result");
 						
+						stmts.add(factory.createStatement(ioURI, RDF.TYPE, resultURI)); // result
 					}
 				}
 				
@@ -205,7 +211,6 @@ public class PROVReporter implements Reporter {
 				
 					stmts.add(factory.createStatement(iiURI, RDF.TYPE, inputURI));
 					
-					// Should check property from the YAML whether it is a dataset
 					if (ii.isDataset()) {
 						stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
 					}

@@ -100,7 +100,9 @@ public class WorkflowParser {
 			// Get the coupled inputs
 			List<?> couples = (List <?>) module.get("couple");
 		
-			List<String> datasets = (List <String>) module.get("datasets");
+			List<String> datasets = (List<String>) module.get("datasets");
+			
+			List<String> results = (List<String>) module.get("results");
 			
 			List<String> errors = new ArrayList<String>();
 			
@@ -112,10 +114,12 @@ public class WorkflowParser {
 	
 			parseInputCouples(builder, moduleName, couples, inputMap);
 			
-			parseInputDataset(builder, moduleName, datasets, inputMap);
-			
+			parseInputDatasets(builder, moduleName, datasets, inputMap);
+						
 			// ask the domain object for the outputs
 			Map<String, DataType> outputTypeMap = getOutputTypes(sourcePath, domain);
+			
+			parseOutputResults(builder, moduleName, results, outputTypeMap);
 			
 			for(String outputName : outputTypeMap.keySet())
 			{
@@ -219,8 +223,8 @@ public class WorkflowParser {
 	}
 	
 	
-	private static void parseInputDataset(Workflow.WorkflowBuilder builder, 	String moduleName, List<String> datasets, Map inputMap){
-		// Process the couple lists
+	private static void parseInputDatasets(Workflow.WorkflowBuilder builder, String moduleName, List<String> datasets, Map inputMap){
+		// Process the dataset lists
 		if(datasets != null) {
 
 			// First validate if these datasets names are indeed input names
@@ -233,8 +237,25 @@ public class WorkflowParser {
 			builder.datasetsInputs(moduleName, datasets);
 			
 		}
-
 	}
+	
+	private static void parseOutputResults(Workflow.WorkflowBuilder builder, String moduleName, List<String> results, Map outputMap){
+		// Process the result lists
+		if(results != null) {
+
+			// First validate if these datasets names are indeed input names
+			for(String outputName : results){
+				if(!outputMap.containsKey(outputName)){
+					throw new InconsistentWorkflowException("Dataset list contains input "+outputName+" which is not defined for this module ");
+				} 
+			}
+			
+			builder.resultOutputs(moduleName, results);
+			
+		}
+	}
+	
+	
 	// Check if list of values provided in workflow description matches the input datatype expected in this domain.
 	private static boolean listItemMatch(List<?> list, DataType type, Domain domain)
 	{

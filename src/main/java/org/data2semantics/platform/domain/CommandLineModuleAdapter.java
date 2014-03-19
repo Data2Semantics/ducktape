@@ -143,6 +143,12 @@ public class CommandLineModuleAdapter  implements Module {
 		return false;
 	}
 
+	@Override
+	public boolean isResult(String outputName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 
 	

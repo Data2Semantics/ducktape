@@ -8,6 +8,8 @@ public class Output implements Data
 	private Module module;
 	private DataType dataType;
 	private boolean print;
+	private boolean result = false;
+	
 	
 	public Output(String name, String description, Module module, DataType dataType)
 	{
@@ -52,6 +54,14 @@ public class Output implements Data
 	public boolean print()
 	{
 		return print;
+	}
+
+	public boolean isResult() {
+		return result;
+	}
+
+	public void result(boolean result) {
+		this.result = result;
 	}
 	
 }

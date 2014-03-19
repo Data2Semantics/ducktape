@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.JavaType;
@@ -286,6 +287,18 @@ public final class Workflow {
 			
 			return this;
 		}
+		
+		public WorkflowBuilder resultOutputs(String moduleName, List<String> resultOutputs){
+			check();   
+			if(! workflow.modules.containsKey(moduleName))
+				throw new IllegalArgumentException("Module ("+moduleName+") does not exist.");
+			
+			ModuleImpl module = workflow.modules.get(moduleName);
+			module.addResults(resultOutputs);
+			
+			return this;
+		}
+		
 		/**
 		 * Returns the workflow object
 		 * 
@@ -351,10 +364,13 @@ public final class Workflow {
 					
 			}
 			
-			// Set boolean flag for individual inputs
+			// Set boolean flag for individual inputs and outputs
 			for (Module m : workflow.modules()){
 				for(Input i : m.inputs()){
 					i.dataset(m.isDataSet(i.name()));
+				}
+				for(Output o : m.outputs()) {
+					o.result(m.isResult(o.name()));
 				}
 			}
 			
@@ -452,6 +468,10 @@ public final class Workflow {
 
 			public void addDataSets(List<String> datasetInputs) {
 				dataSets.addAll(datasetInputs);
+			}
+			
+			public void addResults(List<String> resultOutputs) {
+				results.addAll(resultOutputs);
 			}
 
 			public void addCoupledInputs(List<String> cInputs){
@@ -556,6 +576,11 @@ public final class Workflow {
 			@Override
 			public boolean isDataSet(String inputName) {
 				return dataSets.contains(inputName);
+			}
+
+			@Override
+			public boolean isResult(String outputName) {
+				return results.contains(outputName);
 			}
 
 
