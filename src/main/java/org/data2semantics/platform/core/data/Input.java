@@ -10,6 +10,7 @@ public abstract class Input implements Data
 	private Module module;
 	private boolean print = true;
 	private boolean isDataset = false;
+	private boolean isAggregator = false;
 	
 	public Input(String name, String description,  DataType dataType, Module module)
 	{
@@ -66,4 +67,13 @@ public abstract class Input implements Data
 		this.isDataset = isDataset;
 	}
 
+	public boolean isAggregator() {
+		return isAggregator;
+	}
+
+	public void aggregator(boolean isAggregator) {
+		this.isAggregator = isAggregator;
+	}
+
+	
 }

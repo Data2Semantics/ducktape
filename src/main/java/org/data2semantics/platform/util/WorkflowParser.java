@@ -102,6 +102,8 @@ public class WorkflowParser {
 		
 			List<String> datasets = (List<String>) module.get("datasets");
 			
+			List<String> aggregators = (List<String>) module.get("aggregators");
+			
 			List<String> results = (List<String>) module.get("results");
 			
 			List<String> errors = new ArrayList<String>();
@@ -115,6 +117,8 @@ public class WorkflowParser {
 			parseInputCouples(builder, moduleName, couples, inputMap);
 			
 			parseInputDatasets(builder, moduleName, datasets, inputMap);
+			
+			parseInputAggregators(builder, moduleName, aggregators, inputMap);
 						
 			// ask the domain object for the outputs
 			Map<String, DataType> outputTypeMap = getOutputTypes(sourcePath, domain);
@@ -232,12 +236,25 @@ public class WorkflowParser {
 				if(!inputMap.containsKey(inputName)){
 					throw new InconsistentWorkflowException("Dataset list contains input "+inputName+" which is not defined for this module ");
 				} 
-			}
-			
-			builder.datasetsInputs(moduleName, datasets);
-			
+			}		
+			builder.datasetsInputs(moduleName, datasets);		
 		}
 	}
+
+	private static void parseInputAggregators(Workflow.WorkflowBuilder builder, String moduleName, List<String> aggregators, Map inputMap){
+		// Process the dataset lists
+		if(aggregators != null) {
+
+			// First validate if these datasets names are indeed input names
+			for(String inputName : aggregators){
+				if(!inputMap.containsKey(inputName)){
+					throw new InconsistentWorkflowException("Dataset list contains input "+inputName+" which is not defined for this module ");
+				} 
+			}		
+			builder.aggregatorsInputs(moduleName, aggregators);		
+		}
+	}
+
 	
 	private static void parseOutputResults(Workflow.WorkflowBuilder builder, String moduleName, List<String> results, Map outputMap){
 		// Process the result lists

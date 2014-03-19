@@ -288,6 +288,17 @@ public final class Workflow {
 			return this;
 		}
 		
+		public WorkflowBuilder aggregatorsInputs(String moduleName, List<String> aggregatorInputs){
+			check();   
+			if(! workflow.modules.containsKey(moduleName))
+				throw new IllegalArgumentException("Module ("+moduleName+") does not exist.");
+			
+			ModuleImpl module = workflow.modules.get(moduleName);
+			module.addAggregators(aggregatorInputs);
+			
+			return this;
+		}
+		
 		public WorkflowBuilder resultOutputs(String moduleName, List<String> resultOutputs){
 			check();   
 			if(! workflow.modules.containsKey(moduleName))
@@ -368,6 +379,7 @@ public final class Workflow {
 			for (Module m : workflow.modules()){
 				for(Input i : m.inputs()){
 					i.dataset(m.isDataSet(i.name()));
+					i.aggregator(m.isAggregator(i.name()));
 				}
 				for(Output o : m.outputs()) {
 					o.result(m.isResult(o.name()));
@@ -468,6 +480,10 @@ public final class Workflow {
 
 			public void addDataSets(List<String> datasetInputs) {
 				dataSets.addAll(datasetInputs);
+			}
+			
+			public void addAggregators(List<String> aggregatorInputs) {
+				aggregators.addAll(aggregatorInputs);
 			}
 			
 			public void addResults(List<String> resultOutputs) {
@@ -583,9 +599,10 @@ public final class Workflow {
 				return results.contains(outputName);
 			}
 
-
-
-						
+			@Override
+			public boolean isAggregator(String inputName) {
+				return aggregators.contains(inputName);
+			}
 		}
 		
 	}

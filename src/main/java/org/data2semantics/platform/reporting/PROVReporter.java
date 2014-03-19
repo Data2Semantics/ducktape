@@ -61,6 +61,8 @@ public class PROVReporter implements Reporter {
 	static	URI valueURI = factory.createURI(NAMESPACE, "value");
 	static	URI datasetURI = factory.createURI(NAMESPACE, "Dataset");
 	static	URI resultURI = factory.createURI(NAMESPACE, "Result");
+	static	URI aggregatorURI = factory.createURI(NAMESPACE, "Aggregator");
+	
 	
 	static	URI agURI = factory.createURI(PROV_NAMESPACE, "Agent");
 	static	URI watURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
@@ -179,6 +181,7 @@ public class PROVReporter implements Reporter {
 					
 					if (io.original().isResult()) {
 						stmts.add(factory.createStatement(ioURI, RDF.TYPE, resultURI)); // result
+						stmts.add(factory.createStatement(coURI, RDF.TYPE, resultURI)); // result
 					}
 				}
 				
@@ -197,6 +200,13 @@ public class PROVReporter implements Reporter {
 						stmts.add(factory.createStatement(iiURI, instanceOfURI, ciURI));
 						stmts.add(factory.createStatement(ciURI, RDFS.LABEL, Literals.createLiteral(factory, ii.name())));
 						
+						if (ii.original().isDataset()) {
+							stmts.add(factory.createStatement(ciURI, RDF.TYPE, datasetURI)); // dataset
+						}
+						if (ii.original().isAggregator()) {
+							stmts.add(factory.createStatement(ciURI, RDF.TYPE, aggregatorURI)); // aggregator
+						}
+						
 						// If we can create a literal
 						if (Literals.canCreateLiteral(ii.value())) {
 							stmts.add(factory.createStatement(iiURI, valueURI, Literals.createLiteral(factory, ii.value())));
@@ -211,6 +221,9 @@ public class PROVReporter implements Reporter {
 					
 					if (ii.original().isDataset()) {
 						stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
+					}
+					if (ii.original().isAggregator()) {
+						stmts.add(factory.createStatement(iiURI, RDF.TYPE, aggregatorURI)); // aggregator
 					}
 				}
 			}

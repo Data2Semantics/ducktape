@@ -58,6 +58,8 @@ public interface Module
 		
 		public boolean isDataSet(String inputName);
 		
+		public boolean isAggregator(String inputName);
+		
 		public boolean isResult(String outputName);
 		
 		/**

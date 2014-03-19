@@ -43,6 +43,7 @@ public abstract class AbstractModule implements Module
 	
 	protected Map<String, Set<String>> coupledInputs = new LinkedHashMap<String, Set<String>>();
 	protected Set<String> dataSets = new HashSet<String>(); // inputs names which refer to 'datasets'
+	protected Set<String> aggregators = new HashSet<String>(); 
 	protected Set<String> results = new HashSet<String>(); // output names which refer to/are 'experimental results';
 	
 

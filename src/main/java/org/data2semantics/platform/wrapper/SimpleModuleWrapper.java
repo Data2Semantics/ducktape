@@ -215,6 +215,12 @@ public class SimpleModuleWrapper extends AbstractModule{
 	public boolean isResult(String outputName) {
 		return results.contains(outputName);
 	}
+
+	@Override
+	public boolean isAggregator(String inputName) {
+		return aggregators.contains(inputName); 
+	}
+	
 	
 	
 }
