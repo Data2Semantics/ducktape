@@ -177,9 +177,7 @@ public class PROVReporter implements Reporter {
 						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io)));		
 					}
 					
-					if (io.isResult()) {
-						Global.log().info(io.name() + " is result");
-						
+					if (io.original().isResult()) {
 						stmts.add(factory.createStatement(ioURI, RDF.TYPE, resultURI)); // result
 					}
 				}
@@ -211,7 +209,7 @@ public class PROVReporter implements Reporter {
 				
 					stmts.add(factory.createStatement(iiURI, RDF.TYPE, inputURI));
 					
-					if (ii.isDataset()) {
+					if (ii.original().isDataset()) {
 						stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
 					}
 				}
