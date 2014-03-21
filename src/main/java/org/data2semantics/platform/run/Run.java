@@ -43,7 +43,6 @@ public class Run
     
     public static void main(String[] args) throws IOException
     {
-    	
     	// * Parse and check the command line input
     	Run run = new Run();
     	

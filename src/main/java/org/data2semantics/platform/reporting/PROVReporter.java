@@ -82,6 +82,12 @@ public class PROVReporter implements Reporter {
 	static URI instanceOfURI = factory.createURI(NAMESPACE, "instanceOf");
 			
 	
+	static URI usesArtifactURI = factory.createURI(NAMESPACE, "usesArtifact");
+	static URI artifactIdURI = factory.createURI(NAMESPACE, "hasArtifactId");
+	static URI groupIdURI = factory.createURI(NAMESPACE, "hasGroupId");
+	static URI versionURI = factory.createURI(NAMESPACE, "hasVersion");
+	
+	
 	
 	public PROVReporter(Workflow workflow, File root) {
 		super();
@@ -124,6 +130,9 @@ public class PROVReporter implements Reporter {
 				Literals.createLiteral(factory, "ducktape on: " + InetAddress.getLocalHost().getHostName() + ", versionID: " + Global.getSerialversionuid())));
 		stmts.add(factory.createStatement(workflowURI, RDFS.LABEL, 
 				Literals.createLiteral(factory, workflow.name() + ", date: " + new Date(workflow.file().lastModified()))));
+		
+		
+		// Add the artifact dependencies as usesArtifact to the plan (workflowURI)
 		
 	
 		
