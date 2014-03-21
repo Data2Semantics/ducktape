@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.maven.model.Dependency;
 import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
@@ -133,7 +134,14 @@ public class PROVReporter implements Reporter {
 		
 		
 		// Add the artifact dependencies as usesArtifact to the plan (workflowURI)
-		
+		for (Dependency d : workflow.getDependencies()) {
+			URI dependencyURI = factory.createURI(NAMESPACE, d.getGroupId() + "/" + d.getArtifactId() + "/" + d.getVersion());
+			stmts.add(factory.createStatement(workflowURI, usesArtifactURI, dependencyURI));
+			stmts.add(factory.createStatement(dependencyURI, RDFS.LABEL, Literals.createLiteral(factory, d.getGroupId() + "." + d.getArtifactId() + "." + d.getVersion())));
+			stmts.add(factory.createStatement(dependencyURI, artifactIdURI, Literals.createLiteral(factory, d.getArtifactId())));
+			stmts.add(factory.createStatement(dependencyURI, groupIdURI, Literals.createLiteral(factory, d.getGroupId())));
+			stmts.add(factory.createStatement(dependencyURI, versionURI, Literals.createLiteral(factory, d.getVersion())));
+		}
 	
 		
 		String moduleInstanceSumTimestamp = "module/instance/"+InetAddress.getLocalHost().getHostName()+"/"+workflowMD5sum+"/"+currentTimeMilis+"/";

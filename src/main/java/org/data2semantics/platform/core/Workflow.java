@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.maven.model.Dependency;
 import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
@@ -42,7 +43,8 @@ public final class Workflow {
 	private Map<String, WorkflowBuilder.ModuleImpl> modules = new LinkedHashMap<String, WorkflowBuilder.ModuleImpl>();
 	
 	private ArrayList<Module> sortedList = null;
-			
+	
+	private List<Dependency> dependencies = new ArrayList<Dependency>();
 	/**
 	 * Name of this workflow
 	 */
@@ -74,6 +76,14 @@ public final class Workflow {
 //		}
 //		return result;
 //	}
+	
+	public void setDependencies(List<Dependency> dependencies){
+		this.dependencies = dependencies;
+	}
+	
+	public List<Dependency> getDependencies(){
+		return dependencies;
+	}
 	
 	/**
 	 * @return the name

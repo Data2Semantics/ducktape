@@ -1,11 +1,19 @@
 package org.data2semantics.platform.run;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.execution.ExecutionProfile;
@@ -41,8 +49,9 @@ public class Run
     @Argument
     private List<String> arguments = new ArrayList<String>(1);
     
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args) throws IOException, XmlPullParserException
     {
+
     	// * Parse and check the command line input
     	Run run = new Run();
     	
@@ -84,6 +93,8 @@ public class Run
     	// * Read the workflow description from a yaml file into a map
     	
     	Workflow workflow = WorkflowParser.parseYAML(file);
+    	List<Dependency> dependencies = getMavenDependencies();
+    	workflow.setDependencies(dependencies);
     	
     	// -- The workflow object will check the consistency of the inputs and 
     	//    outputs and make sure that everything can be executed.  
@@ -114,6 +125,8 @@ public class Run
 					new PROVReporter(workflow, new File(output, "prov/"))
 				);
 		
+		
+		
     	Orchestrator orchestrator = new Orchestrator(workflow,  executionProfile, rp, reporters);
     	
     	orchestrator.orchestrate();
@@ -139,4 +152,12 @@ public class Run
         System.exit(1);
     }
 
+    public static List<Dependency> getMavenDependencies() throws FileNotFoundException, IOException, XmlPullParserException{
+    	MavenXpp3Reader reader = new MavenXpp3Reader();
+		Model model = reader.read(new FileReader(new File("pom.xml")));
+		List<Dependency> dependencies = model.getDependencies();
+		
+		return dependencies;
+    }
+    
 }
