@@ -122,7 +122,7 @@ public class ExtractTable {
 		// Also what I got here now is actually only the URI of row, col, and out. while you care about value.
 		String simpleTableQuery = 
 				"\n	PREFIX prov: <http://www.w3.org/ns/prov#> " +
-				"\n	PREFIX d2s:  <http://www.data2semantics.org/d2s-platform/>" +
+				"\n	PREFIX d2s:  <http://platform.data2semantics.org/>" +
 				"\n	SELECT  ?vRow ?vCol ?vOut" +
 				"\n	WHERE { " +
 				"\n		?out 		rdf:type prov:Entity				." +
@@ -136,9 +136,9 @@ public class ExtractTable {
 				"\n		?activity 	prov:used	?row					." +
 				"\n		?activity	prov:used	?col					." +
 				
-				"\n		?row		<http://www.data2semantics.org/d2s-platform/value>  ?vRow					." +
-				"\n		?col		<http://www.data2semantics.org/d2s-platform/value>	?vCol					." +
-				"\n		?out		<http://www.data2semantics.org/d2s-platform/value>	?vOut					." +
+				"\n		?row		<http://platform.data2semantics.org/value>  ?vRow					." +
+				"\n		?col		<http://platform.data2semantics.org/value>	?vCol					." +
+				"\n		?out		<http://platform.data2semantics.org/value>	?vOut					." +
 				
 				"\n		?activity   rdfs:label 			?activityLabel . " +
 				"\n		FILTER 		regex(str(?activityLabel), \"" + spec.getModuleName() + "\", \"i\")	." +

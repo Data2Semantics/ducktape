@@ -39,7 +39,7 @@ import org.openrdf.rio.Rio;
  *
  */
 public class PROVReporter implements Reporter {
-	private static final String NAMESPACE = "http://www.data2semantics.org/d2s-platform/";
+	private static final String NAMESPACE = "http://platform.data2semantics.org/";
 	private static final String PROV_NAMESPACE =  "http://www.w3.org/ns/prov#";
 	
 	private static final String PROV_FILE = "prov-o.ttl"; 
