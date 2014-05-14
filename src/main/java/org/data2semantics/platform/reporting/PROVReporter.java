@@ -19,6 +19,7 @@ import org.openrdf.model.BNode;
 import org.openrdf.model.Model;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LinkedHashModel;
 import org.openrdf.model.impl.ValueFactoryImpl;
@@ -31,6 +32,9 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
 
 
+
+
+
 /**
  * Class to report the provenance of a workflow in PROV RDF
  * 
@@ -39,7 +43,11 @@ import org.openrdf.rio.Rio;
  *
  */
 public class PROVReporter implements Reporter {
-	private static final String NAMESPACE = "http://platform.data2semantics.org/";
+	private static final String NAMESPACE = "http://prov.data2semantics.org/";
+	private static final String VOCABULARY = NAMESPACE + "vocab/";
+	private static final String RESOURCE = NAMESPACE + "resource/";
+	
+	
 	private static final String PROV_NAMESPACE =  "http://www.w3.org/ns/prov#";
 	
 	private static final String PROV_FILE = "prov-o.ttl"; 
@@ -51,44 +59,43 @@ public class PROVReporter implements Reporter {
 
 	
 	static	ValueFactory factory = ValueFactoryImpl.getInstance();		
-	static	URI eURI = factory.createURI(PROV_NAMESPACE, "Entity");
-	static	URI acURI = factory.createURI(PROV_NAMESPACE, "Activity");
-	static	URI usedURI = factory.createURI(PROV_NAMESPACE, "used");
-	static	URI wgbURI  = factory.createURI(PROV_NAMESPACE, "wasGeneratedBy");
-	static	URI	genAtURI  = factory.createURI(PROV_NAMESPACE, "generatedAtTime");
-	static	URI	startAtURI  = factory.createURI(PROV_NAMESPACE, "startedAtTime");
-	static	URI	endAtURI  = factory.createURI(PROV_NAMESPACE, "endedAtTime");
+	static	URI provEntityURI = factory.createURI(PROV_NAMESPACE, "Entity");
+	static	URI provActivityURI = factory.createURI(PROV_NAMESPACE, "Activity");
+	static	URI provUsedURI = factory.createURI(PROV_NAMESPACE, "used");
+	static	URI provWasGeneratedByURI  = factory.createURI(PROV_NAMESPACE, "wasGeneratedBy");
+	static	URI	profGenAtURI  = factory.createURI(PROV_NAMESPACE, "generatedAtTime");
+	static	URI	provStartAtURI  = factory.createURI(PROV_NAMESPACE, "startedAtTime");
+	static	URI	provEndAtURI  = factory.createURI(PROV_NAMESPACE, "endedAtTime");
+	
+	static	URI provAgentURI = factory.createURI(PROV_NAMESPACE, "Agent");
+	static	URI provWasAttributedToURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
+	static	URI provWasAssociatedWithURI  = factory.createURI(PROV_NAMESPACE, "wasAssociatedWith");
+	
+	
+	static	URI provPlanURI  = factory.createURI(PROV_NAMESPACE, "Plan");
+	static	URI provAssociationURI  = factory.createURI(PROV_NAMESPACE, "Association");	
+	static	URI provQualifiedAssociationURI  = factory.createURI(PROV_NAMESPACE, "qualifiedAssociation");	
 		
-	static	URI valueURI = factory.createURI(NAMESPACE, "value");
-	static	URI datasetURI = factory.createURI(NAMESPACE, "Dataset");
-	static	URI resultURI = factory.createURI(NAMESPACE, "Result");
-	static	URI aggregatorURI = factory.createURI(NAMESPACE, "Aggregator");
-	
-	
-	static	URI agURI = factory.createURI(PROV_NAMESPACE, "Agent");
-	static	URI watURI  = factory.createURI(PROV_NAMESPACE, "wasAttributedTo");
-	static	URI wawURI  = factory.createURI(PROV_NAMESPACE, "wasAssociatedWith");
+	static	URI provHadPlanURI  = factory.createURI(PROV_NAMESPACE, "hadPlan");
+	static	URI provHadAgentURI  = factory.createURI(PROV_NAMESPACE, "agent");
 		
-	static	URI planURI  = factory.createURI(PROV_NAMESPACE, "Plan");
-	static	URI assoURI  = factory.createURI(PROV_NAMESPACE, "Association");	
-	static	URI qualAssoURI  = factory.createURI(PROV_NAMESPACE, "qualifiedAssociation");	
-		
-	static	URI hadPlanURI  = factory.createURI(PROV_NAMESPACE, "hadPlan");
-	static	URI hadAgentURI  = factory.createURI(PROV_NAMESPACE, "agent");
+	static	URI d2sValueURI = factory.createURI(VOCABULARY, "value");
+	static	URI d2sDatasetURI = factory.createURI(VOCABULARY, "Dataset");
+	static	URI d2sAggregatorURI = factory.createURI(VOCABULARY, "Aggregator");
 	
-	static URI inputURI = factory.createURI(NAMESPACE, "Input");
-	static URI outputURI = factory.createURI(NAMESPACE, "Output");
-	static URI moduleURI = factory.createURI(NAMESPACE, "Module");
+	//static	URI d2sResultURI = factory.createURI(VOCABULARY, "Result");
 	
-	static URI instanceOfURI = factory.createURI(NAMESPACE, "instanceOf");
+	//static URI  d2sInputURI = factory.createURI(VOCABULARY, "Input");
+	//static URI  d2sOutputURI = factory.createURI(VOCABULARY, "Output");
+	//static URI  d2sModuleURI = factory.createURI(VOCABULARY, "Module");
+	//static URI d2sInstanceOfURI = factory.createURI(VOCABULARY, "instanceOf");
 			
 	
-	static URI usesArtifactURI = factory.createURI(NAMESPACE, "usesArtifact");
-	static URI artifactIdURI = factory.createURI(NAMESPACE, "hasArtifactId");
-	static URI groupIdURI = factory.createURI(NAMESPACE, "hasGroupId");
-	static URI versionURI = factory.createURI(NAMESPACE, "hasVersion");
-	
-	
+	static URI d2sUsesArtifactURI = factory.createURI(VOCABULARY, "usesArtifact");
+	static URI d2sArtifactIdURI = factory.createURI(VOCABULARY, "hasArtifactId");
+	static URI d2sGroupIdURI = factory.createURI(VOCABULARY, "hasGroupId");
+	static URI d2sVersionURI = factory.createURI(VOCABULARY, "hasVersion");
+	static URI d2sResultOf = factory.createURI(VOCABULARY, "resultOf");
 	
 	public PROVReporter(Workflow workflow, File root) {
 		super();
@@ -113,18 +120,19 @@ public class PROVReporter implements Reporter {
 	private Model writePROV() throws IOException {
 
 		Model stmts = new LinkedHashModel();
+		
 		FileInputStream fis = new FileInputStream(workflow.file());
 		String workflowMD5sum = DigestUtils.md5Hex(fis);
 		long currentTimeMilis = System.currentTimeMillis();
 		
 		// Define all the URI's that we are going to (re)use
 
-		URI platformURI = factory.createURI(NAMESPACE + "ducktape/", InetAddress.getLocalHost().getHostName() + "/" + Global.getSerialversionuid());
-		URI workflowURI = factory.createURI(NAMESPACE + "workflow/", workflow.file().getAbsolutePath() + "/" + workflowMD5sum);
+		URI platformURI = factory.createURI(RESOURCE + "ducktape/", InetAddress.getLocalHost().getHostName() + "/" + Global.getSerialversionuid());
+		URI workflowURI = factory.createURI(RESOURCE + "workflow/", workflow.file().getAbsolutePath() + "/" + workflowMD5sum);
 			
 		// The software is the agent and the workflow is the plan
-		stmts.add(factory.createStatement(platformURI, RDF.TYPE, agURI)); 
-		stmts.add(factory.createStatement(workflowURI, RDF.TYPE, planURI));
+		stmts.add(factory.createStatement(platformURI, RDF.TYPE, provAgentURI)); 
+		stmts.add(factory.createStatement(workflowURI, RDF.TYPE, provPlanURI));
 		
 		// Labels for the platform (ducktape) and current workflow
 		stmts.add(factory.createStatement(platformURI, RDFS.LABEL, 
@@ -135,12 +143,12 @@ public class PROVReporter implements Reporter {
 		
 		// Add the artifact dependencies as usesArtifact to the plan (workflowURI)
 		for (Dependency d : workflow.getDependencies()) {
-			URI dependencyURI = factory.createURI(NAMESPACE, d.getGroupId() + "/" + d.getArtifactId() + "/" + d.getVersion());
-			stmts.add(factory.createStatement(workflowURI, usesArtifactURI, dependencyURI));
+			URI dependencyURI = factory.createURI(RESOURCE, d.getGroupId() + "/" + d.getArtifactId() + "/" + d.getVersion());
+			stmts.add(factory.createStatement(workflowURI, d2sUsesArtifactURI, dependencyURI));
 			stmts.add(factory.createStatement(dependencyURI, RDFS.LABEL, Literals.createLiteral(factory, d.getGroupId() + "." + d.getArtifactId() + "." + d.getVersion())));
-			stmts.add(factory.createStatement(dependencyURI, artifactIdURI, Literals.createLiteral(factory, d.getArtifactId())));
-			stmts.add(factory.createStatement(dependencyURI, groupIdURI, Literals.createLiteral(factory, d.getGroupId())));
-			stmts.add(factory.createStatement(dependencyURI, versionURI, Literals.createLiteral(factory, d.getVersion())));
+			stmts.add(factory.createStatement(dependencyURI, d2sArtifactIdURI, Literals.createLiteral(factory, d.getArtifactId())));
+			stmts.add(factory.createStatement(dependencyURI, d2sGroupIdURI, Literals.createLiteral(factory, d.getGroupId())));
+			stmts.add(factory.createStatement(dependencyURI, d2sVersionURI, Literals.createLiteral(factory, d.getVersion())));
 		}
 	
 		
@@ -149,56 +157,63 @@ public class PROVReporter implements Reporter {
 		
 		for (Module module : workflow.modules()) {
 			
+			// Create module class, as subclass of prov:Activity
+			URI mcURI = factory.createURI(RESOURCE + moduleClassSumTimestamp, module.name());
+			stmts.add(factory.createStatement(mcURI, RDFS.SUBCLASSOF, provActivityURI));
+			
 			for (ModuleInstance mi : module.instances()) {
 				// Create provenance for the module (as an activity)
-				URI miURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID());
-				URI mcURI = factory.createURI(NAMESPACE + moduleClassSumTimestamp, module.name());
+				URI miURI = factory.createURI(RESOURCE + moduleInstanceSumTimestamp, module.name() + mi.moduleID());
 				
 				
-				// ** miURI is activity ** //
-				stmts.add(factory.createStatement(miURI, RDF.TYPE, acURI)); // Activity
-				stmts.add(factory.createStatement(miURI, startAtURI, Literals.createLiteral(factory, new Date(mi.startTime())))); // Start time
-				stmts.add(factory.createStatement(miURI, endAtURI, Literals.createLiteral(factory, new Date(mi.endTime())))); // end time			
-				stmts.add(factory.createStatement(miURI, wawURI, platformURI)); // wasAssociatedWith
+				// ** miURI is type of module class which is subclass of activity ** //
+				stmts.add(factory.createStatement(miURI, RDF.TYPE, mcURI)); 				
+				
+				stmts.add(factory.createStatement(miURI, provStartAtURI, Literals.createLiteral(factory, new Date(mi.startTime())))); // Start time
+				stmts.add(factory.createStatement(miURI, provEndAtURI, Literals.createLiteral(factory, new Date(mi.endTime())))); // end time			
+				stmts.add(factory.createStatement(miURI, provWasAssociatedWithURI, platformURI)); // wasAssociatedWith
 				stmts.add(factory.createStatement(miURI, RDFS.LABEL, Literals.createLiteral(factory, module.name() + mi.moduleID()))); // This activity is labeled as its module name.
 				
-				stmts.add(factory.createStatement(miURI,RDF.TYPE, moduleURI));
-				stmts.add(factory.createStatement(miURI, instanceOfURI, mcURI));
+				//stmts.add(factory.createStatement(miURI,RDF.TYPE, d2sModuleURI));
+			
 				stmts.add(factory.createStatement(mcURI, RDFS.LABEL, Literals.createLiteral(factory, module.name())));
 				
 				
 				// qualified Association
 				BNode bn = factory.createBNode();
-				stmts.add(factory.createStatement(bn, RDF.TYPE, assoURI));
-				stmts.add(factory.createStatement(bn, hadPlanURI, workflowURI));
-				stmts.add(factory.createStatement(bn, hadAgentURI, platformURI));
-				stmts.add(factory.createStatement(miURI, qualAssoURI, bn));
+				stmts.add(factory.createStatement(bn, RDF.TYPE, provAssociationURI));
+				stmts.add(factory.createStatement(bn, provHadPlanURI, workflowURI));
+				stmts.add(factory.createStatement(bn, provHadAgentURI, platformURI));
+				stmts.add(factory.createStatement(miURI, provQualifiedAssociationURI, bn));
 				
 				// Create provenance for the outputs (as entities)
 				for (InstanceOutput io : mi.outputs()) {
-					URI ioURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID() + "/output/" + io.name());
-					URI coURI = factory.createURI(NAMESPACE + moduleClassSumTimestamp, module.name() + "/output/" + io.name());
+					URI ioURI = factory.createURI(RESOURCE + moduleInstanceSumTimestamp, module.name() + mi.moduleID() + "/output/" + io.name());
+
+					URI coURI = factory.createURI(RESOURCE + moduleClassSumTimestamp, module.name() + "/output/" + io.name());
 					
-					// ** ioURI is entity** //
-					stmts.add(factory.createStatement(ioURI, RDF.TYPE, eURI)); // entity
+					stmts.add(factory.createStatement(coURI, RDFS.SUBCLASSOF, provEntityURI)); // output class, subclass of prov:Entity
+						
+					// ** ioURI is of type coURI, which is subclass of entity** //
+					
+					stmts.add(factory.createStatement(ioURI, RDF.TYPE, coURI)); // coURI
+					
 					// ** ioURI was Generated By miURI ** //
-					stmts.add(factory.createStatement(ioURI, wgbURI, miURI)); // wasGeneratedBy
-					stmts.add(factory.createStatement(ioURI, genAtURI, Literals.createLiteral(factory, new Date(io.creationTime())))); // generated at time
-					stmts.add(factory.createStatement(ioURI, watURI, platformURI)); // wasAttributedTo
+					stmts.add(factory.createStatement(ioURI, provWasGeneratedByURI, miURI)); // wasGeneratedBy
+					stmts.add(factory.createStatement(ioURI, profGenAtURI, Literals.createLiteral(factory, new Date(io.creationTime())))); // generated at time
+					stmts.add(factory.createStatement(ioURI, provWasAttributedToURI, platformURI)); // wasAttributedTo
 					
-					stmts.add(factory.createStatement(ioURI, RDF.TYPE, outputURI));
-					stmts.add(factory.createStatement(ioURI, instanceOfURI, coURI));
 					stmts.add(factory.createStatement(coURI, RDFS.LABEL, Literals.createLiteral(factory, io.name())));
 					
 					// If we can create a literal of the value, save it and create a rdfs-label
 					if (Literals.canCreateLiteral(io.value())) {
-						stmts.add(factory.createStatement(ioURI, valueURI, Literals.createLiteral(factory, io.value())));
+						stmts.add(factory.createStatement(ioURI, d2sValueURI, Literals.createLiteral(factory, io.value())));
 						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io)));		
 					}
 					
 					if (io.original().isResult()) {
-						stmts.add(factory.createStatement(ioURI, RDF.TYPE, resultURI)); // result
-						stmts.add(factory.createStatement(coURI, RDF.TYPE, resultURI)); // result
+						stmts.add(factory.createStatement(ioURI, d2sResultOf, workflowURI)); // result
+						stmts.add(factory.createStatement(coURI, d2sResultOf, workflowURI)); // result
 					}
 				}
 				
@@ -207,40 +222,40 @@ public class PROVReporter implements Reporter {
 					URI iiURI = null;
 					
 					if (ii.instanceOutput() != null) { // It is also an output somewhere
-						iiURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, ii.instanceOutput().module().name() 
+						iiURI = factory.createURI(RESOURCE + moduleInstanceSumTimestamp, ii.instanceOutput().module().name() 
 								+ ii.instanceOutput().instance().moduleID() + "/output/" + ii.instanceOutput().name());
 					} else {
-						iiURI = factory.createURI(NAMESPACE + moduleInstanceSumTimestamp, module.name() + mi.moduleID()
+						iiURI = factory.createURI(RESOURCE + moduleInstanceSumTimestamp, module.name() + mi.moduleID()
 								+ "/input/" + ii.name());
-						URI ciURI = factory.createURI(NAMESPACE + moduleClassSumTimestamp, module.name() + "/input/" + ii.name());
+						URI ciURI = factory.createURI(RESOURCE + moduleClassSumTimestamp, module.name() + "/input/" + ii.name());
+						stmts.add(factory.createStatement(ciURI, RDFS.SUBCLASSOF, provEntityURI)); // instance class subclass of prov:Entity
 						
-						stmts.add(factory.createStatement(iiURI, instanceOfURI, ciURI));
+						stmts.add(factory.createStatement(iiURI, RDF.TYPE, ciURI));
 						stmts.add(factory.createStatement(ciURI, RDFS.LABEL, Literals.createLiteral(factory, ii.name())));
 						
 						if (ii.original().isDataset()) {
-							stmts.add(factory.createStatement(ciURI, RDF.TYPE, datasetURI)); // dataset
+							stmts.add(factory.createStatement(ciURI, RDF.TYPE, d2sDatasetURI)); // dataset
 						}
 						if (ii.original().isAggregator()) {
-							stmts.add(factory.createStatement(ciURI, RDF.TYPE, aggregatorURI)); // aggregator
+							stmts.add(factory.createStatement(ciURI, RDF.TYPE, d2sAggregatorURI)); // aggregator
 						}
 						
 						// If we can create a literal
 						if (Literals.canCreateLiteral(ii.value())) {
-							stmts.add(factory.createStatement(iiURI, valueURI, Literals.createLiteral(factory, ii.value())));
+							stmts.add(factory.createStatement(iiURI, d2sValueURI, Literals.createLiteral(factory, ii.value())));
 							stmts.add(factory.createStatement(iiURI, RDFS.LABEL, Literals.createLiteral(factory, ii)));			
 						}			
 					}
 							
-					stmts.add(factory.createStatement(iiURI, RDF.TYPE, eURI)); // entity
-					stmts.add(factory.createStatement(miURI, usedURI, iiURI)); // used					
+					stmts.add(factory.createStatement(iiURI, RDF.TYPE, provEntityURI)); // entity
+					stmts.add(factory.createStatement(miURI, provUsedURI, iiURI)); // used					
 				
-					stmts.add(factory.createStatement(iiURI, RDF.TYPE, inputURI));
 					
 					if (ii.original().isDataset()) {
-						stmts.add(factory.createStatement(iiURI, RDF.TYPE, datasetURI)); // dataset
+						stmts.add(factory.createStatement(iiURI, RDF.TYPE, d2sDatasetURI)); // dataset
 					}
 					if (ii.original().isAggregator()) {
-						stmts.add(factory.createStatement(iiURI, RDF.TYPE, aggregatorURI)); // aggregator
+						stmts.add(factory.createStatement(iiURI, RDF.TYPE, d2sAggregatorURI)); // aggregator
 					}
 				}
 			}
