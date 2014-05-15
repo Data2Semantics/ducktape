@@ -44,8 +44,8 @@ import org.openrdf.rio.Rio;
  */
 public class PROVReporter implements Reporter {
 	private static final String NAMESPACE = "http://prov.data2semantics.org/";
-	private static final String VOCABULARY = NAMESPACE + "vocab/";
-	private static final String RESOURCE = NAMESPACE + "resource/";
+	private static final String VOCABULARY = NAMESPACE + "vocab/ducktape/";
+	private static final String RESOURCE = NAMESPACE + "resource/ducktape/";
 	
 	
 	private static final String PROV_NAMESPACE =  "http://www.w3.org/ns/prov#";
@@ -92,9 +92,9 @@ public class PROVReporter implements Reporter {
 			
 	
 	static URI d2sUsesArtifactURI = factory.createURI(VOCABULARY, "usesArtifact");
-	static URI d2sArtifactIdURI = factory.createURI(VOCABULARY, "hasArtifactId");
-	static URI d2sGroupIdURI = factory.createURI(VOCABULARY, "hasGroupId");
-	static URI d2sVersionURI = factory.createURI(VOCABULARY, "hasVersion");
+	static URI d2sHasArtifactIdURI = factory.createURI(VOCABULARY, "hasArtifactId");
+	static URI d2sHasGroupIdURI = factory.createURI(VOCABULARY, "hasGroupId");
+	static URI d2sHasVersionURI = factory.createURI(VOCABULARY, "hasVersion");
 	static URI d2sResultOf = factory.createURI(VOCABULARY, "resultOf");
 	
 	public PROVReporter(Workflow workflow, File root) {
@@ -146,9 +146,9 @@ public class PROVReporter implements Reporter {
 			URI dependencyURI = factory.createURI(RESOURCE, d.getGroupId() + "/" + d.getArtifactId() + "/" + d.getVersion());
 			stmts.add(factory.createStatement(workflowURI, d2sUsesArtifactURI, dependencyURI));
 			stmts.add(factory.createStatement(dependencyURI, RDFS.LABEL, Literals.createLiteral(factory, d.getGroupId() + "." + d.getArtifactId() + "." + d.getVersion())));
-			stmts.add(factory.createStatement(dependencyURI, d2sArtifactIdURI, Literals.createLiteral(factory, d.getArtifactId())));
-			stmts.add(factory.createStatement(dependencyURI, d2sGroupIdURI, Literals.createLiteral(factory, d.getGroupId())));
-			stmts.add(factory.createStatement(dependencyURI, d2sVersionURI, Literals.createLiteral(factory, d.getVersion())));
+			stmts.add(factory.createStatement(dependencyURI, d2sHasArtifactIdURI, Literals.createLiteral(factory, d.getArtifactId())));
+			stmts.add(factory.createStatement(dependencyURI, d2sHasGroupIdURI, Literals.createLiteral(factory, d.getGroupId())));
+			stmts.add(factory.createStatement(dependencyURI, d2sHasVersionURI, Literals.createLiteral(factory, d.getVersion())));
 		}
 	
 		
