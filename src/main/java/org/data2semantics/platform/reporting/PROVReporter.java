@@ -30,6 +30,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
+import org.openrdf.rio.ntriples.NTriplesUtil;
 
 
 
@@ -51,7 +52,6 @@ public class PROVReporter implements Reporter {
 	private static final String PROV_NAMESPACE =  "http://www.w3.org/ns/prov#";
 	
 	private static final String PROV_FILE = "prov-o.ttl"; 
-	
 	
 	
 	private Workflow workflow;
@@ -126,9 +126,9 @@ public class PROVReporter implements Reporter {
 		long currentTimeMilis = System.currentTimeMillis();
 		
 		// Define all the URI's that we are going to (re)use
-
+		
 		URI platformURI = factory.createURI(RESOURCE + "ducktape/", InetAddress.getLocalHost().getHostName() + "/" + Global.getSerialversionuid());
-		URI workflowURI = factory.createURI(RESOURCE + "workflow/", workflow.file().getAbsolutePath() + "/" + workflowMD5sum);
+		URI workflowURI = factory.createURI(RESOURCE + "workflow/", workflow.file().toURI().toURL() + "/" + workflowMD5sum);
 			
 		// The software is the agent and the workflow is the plan
 		stmts.add(factory.createStatement(platformURI, RDF.TYPE, provAgentURI)); 
