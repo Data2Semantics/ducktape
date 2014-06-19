@@ -186,3 +186,7 @@ ul.menu li a.inner span {
 	background: #0078ff;
 }
 
+.slick-prev:before, 
+.slick-next:before {
+    color: #0d1425;
+}

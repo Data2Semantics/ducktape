@@ -144,3 +144,14 @@ h2 {
 .output {
 	margin: 0 0 30px 0; 
 }
+
+
+.image-list div
+{
+	text-align: center;
+}
+
+.image-list div img
+{
+	display: block;
+}

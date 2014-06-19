@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,7 +40,9 @@ public class HTMLReporter implements Reporter
 	
 	static  {
 		parsers.add(new ImageParser());
+		parsers.add(new ImageListParser());
 		parsers.add(new ToStringParser());
+		
 	}
 	
 	private Workflow workflow;
@@ -634,6 +637,89 @@ public class HTMLReporter implements Reporter
 			try
 			{
 				tpl = writer.getTemplate("parser.image.jade");
+			} catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+
+			// * Process the template
+
+			return writer.jadeConfig().renderTemplate(tpl, templateData);
+		}
+	
+	}
+	
+	public static class ImageListParser implements Parser {
+
+		@Override
+		public boolean accept(Object value)
+		{
+			if (! (value instanceof Collection))
+				return false;
+			
+			if( ((Collection<?>)value).size() == 0)
+				return false;
+			
+			if(containsNonImage((Collection<Object>)value))
+				return false;
+			
+			return true;
+		}
+		
+		private boolean containsNonImage(Collection<Object> coll)
+		{
+			for(Object object : coll)
+			{
+				if(! (object instanceof RenderedImage))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String parse(Object value, String name, ReportWriter writer, File dir)
+		{
+			@SuppressWarnings("unchecked")
+			Collection<RenderedImage> images = (Collection<RenderedImage>)value;
+			
+			// * Write the images
+			File imageDir = new File(dir, "images/"+name+"/");
+			imageDir.mkdirs();
+			
+			int i = 0;
+			int zeroPadd = ((int)Math.log10(images.size())) - 1;
+			zeroPadd = zeroPadd < 1 ? 1 : zeroPadd;
+			
+			List<String> urls = new ArrayList<String>(images.size());
+
+			for(RenderedImage image : images)
+			{
+				String imageName = String.format(name+".%0"+zeroPadd+"d.png", i);
+				File imageFile = new File(imageDir, imageName);
+				
+				urls.add("images/"+name+"/"+imageName);
+				
+				try
+				{
+					ImageIO.write(image, "PNG", imageFile);
+				} catch (IOException e)
+				{
+					throw new RuntimeException(e);
+				}
+				i++;
+			}
+			
+			// * Collate the data
+			Map<String, Object> templateData = new LinkedHashMap<String, Object>();
+			
+			templateData.put("name", name);
+			templateData.put("urls", urls);
+			
+			// * Load the template
+			JadeTemplate tpl;
+			try
+			{
+				tpl = writer.getTemplate("parser.imagelist.jade");
 			} catch (IOException e)
 			{
 				throw new RuntimeException(e);

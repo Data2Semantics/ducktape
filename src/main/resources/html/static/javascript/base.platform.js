@@ -3,6 +3,13 @@ $(function()
 	// * Set up the tabs (basic jquery UI functionality)
 	$(".js-tabs").tabs();
 	
+	// * Set up any image sliders
+	$('.image-list').slick({
+		  infinite: false,
+		  slidesToShow: 3,
+		  slidesToScroll: 3
+	});
+	
 	// * Plot the graphs where required
 	$('.graph').each(function ()
 	{

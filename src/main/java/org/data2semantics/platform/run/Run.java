@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
@@ -154,9 +155,17 @@ public class Run
 
     public static List<Dependency> getMavenDependencies() throws FileNotFoundException, IOException, XmlPullParserException{
     	MavenXpp3Reader reader = new MavenXpp3Reader();
-		Model model = reader.read(new FileReader(new File("pom.xml")));
-		List<Dependency> dependencies = model.getDependencies();
-		
+    	
+    	File pomFile = new File("pom.xml");
+    	List<Dependency> dependencies;
+    	
+    	if(pomFile.exists())
+    	{
+			Model model = reader.read(new FileReader(pomFile));
+			dependencies = model.getDependencies();
+    	} else
+    		dependencies = Collections.emptyList();
+			
 		return dependencies;
     }
     
