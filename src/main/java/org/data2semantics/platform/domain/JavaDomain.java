@@ -1,5 +1,9 @@
 package org.data2semantics.platform.domain;
 
+import static org.data2semantics.platform.util.Functions.getWorkSpace;
+
+import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -12,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.data2semantics.platform.Global;
 import org.data2semantics.platform.annotation.DomainDefinition;
 import org.data2semantics.platform.annotation.Factory;
 import org.data2semantics.platform.annotation.In;
@@ -24,11 +29,13 @@ import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.JavaType;
 import org.data2semantics.platform.core.data.Output;
 import org.data2semantics.platform.exception.WorkflowCodeMatchException;
+import org.data2semantics.platform.util.Functions;
 import org.data2semantics.platform.util.PlatformUtil;
 
 @DomainDefinition(prefix="java")
 public class JavaDomain implements Domain
 {
+	private static File baseDir = (new File(".")).getAbsoluteFile();
 	private static JavaDomain domain = new JavaDomain();
 	
 	@Override
@@ -57,6 +64,8 @@ public class JavaDomain implements Domain
 	@Override
 	public boolean execute(ModuleInstance instance, List<String> errors, Map<String, Object> outputs)
 	{
+		Global.setWorkingDir(getWorkSpace(instance));
+		
 		// Three cases based on inputs :
 		Class<?> curClass =  loadClass(instance.module().source());
 	
@@ -75,6 +84,7 @@ public class JavaDomain implements Domain
 				return constructorExecute(instance, curConstructor, errors, outputs);
 		
 		errors.add("No module execution available for inputs of this module" );
+		
 		return false; 
 	}
 	
@@ -202,7 +212,7 @@ public class JavaDomain implements Domain
 		
 		// Execute the instantiated module object (and collect the results)
 		boolean success = executeInstantiated(moduleObject, instance, errors, outputs);
-		
+			
 		return success;
 	}
 

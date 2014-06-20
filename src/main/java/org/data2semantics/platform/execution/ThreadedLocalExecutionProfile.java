@@ -27,14 +27,15 @@ public class ThreadedLocalExecutionProfile extends ExecutionProfile {
 		
 		ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 		 
-		for(Module m : modules){
+		for(Module m : modules)
+		{
 			
 			for(Reporter reporter : reporters){
 				
 				try {
 					reporter.report();
-			
-				} catch (IOException e) {
+				} catch (IOException e) 
+				{
 					
 				}
 			}
@@ -53,7 +54,7 @@ public class ThreadedLocalExecutionProfile extends ExecutionProfile {
 					results.add(executor.submit(moduleInstanceWorker));
 				}
 				
-				//Make sure all the instance finished before continue to next batch of modules.
+				// Make sure all the instance finished before continue to next batch of modules.
 				for(Future<Boolean> res : results ){
 					try {
 						res.get();

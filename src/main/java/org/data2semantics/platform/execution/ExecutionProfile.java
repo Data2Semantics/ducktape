@@ -1,5 +1,6 @@
 package org.data2semantics.platform.execution;
 
+import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,7 +41,7 @@ abstract public class ExecutionProfile {
 		{
 				boolean success = true;		
 				
-				//Check each inputs of current Module, if they are all ready.
+				// Check each inputs of current Module, if they are all ready.
 				
 				// If there are references from other retrieve all required 
 				// inputs from Resource Space

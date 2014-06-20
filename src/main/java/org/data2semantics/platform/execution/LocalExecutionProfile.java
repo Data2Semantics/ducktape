@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.reporting.Reporter;
@@ -42,7 +43,9 @@ public class LocalExecutionProfile extends ExecutionProfile {
 	
 					log.debug(" Executing instance of module  : " + mi.module().name());
 					log.debug("    Inputs : "+mi.inputs());
+									
 					mi.execute();
+						
 					log.debug("    Outputs : "+mi.outputs());
 					log.debug(mi+" "+mi.state());
 							

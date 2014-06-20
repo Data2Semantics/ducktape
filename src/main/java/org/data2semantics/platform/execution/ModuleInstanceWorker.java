@@ -9,17 +9,21 @@ public class ModuleInstanceWorker implements Callable<Boolean> {
 
 	Logger log = Logger.getLogger(ModuleInstanceWorker.class);
 	ModuleInstance mi;
-	public ModuleInstanceWorker(ModuleInstance mi) {
+	
+	
+	public ModuleInstanceWorker(ModuleInstance mi) 
+	{
 		this.mi = mi;
 	}
 
 	@Override
-	public Boolean call() throws Exception {
+	public Boolean call() throws Exception 
+	{
 		log.debug("Starting instance " + mi.module().name() + " thread "+Thread.currentThread().getName());
+		
 		Boolean result= mi.execute();
+		
 		log.debug("Finish instance " + mi.module().name() + " thread "+Thread.currentThread().getName());
-		
-		
 		return result;
 	}
 

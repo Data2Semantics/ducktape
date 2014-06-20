@@ -16,6 +16,12 @@ public interface ModuleInstance
 {
 	public Module module();
 
+	/**
+	 * This id uniquely identifies the instance in the set of all instances of the 
+	 * given modules (but not between modules)
+	 * @return
+	 */
+	public int index();
 	
 	public int moduleID();
 	

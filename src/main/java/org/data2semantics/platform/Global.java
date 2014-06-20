@@ -1,5 +1,6 @@
 package org.data2semantics.platform;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.data2semantics.platform.domain.PythonDomain;
 
 public class Global implements Serializable
 {
+	private static ThreadLocal<File> workingDirectory = new ThreadLocal<File>();
+	
 	/**
 	 * 
 	 */
@@ -27,6 +30,8 @@ public class Global implements Serializable
 		domains.put("java", new JavaDomain());
 		domains.put("python", new PythonDomain());
 		domains.put("cli", new CommandLineDomain());
+		
+		workingDirectory.set(new File("."));
 	}
 
 	public static boolean domainExists(String name)
@@ -70,5 +75,13 @@ public class Global implements Serializable
 		return serialVersionUID;
 	}
 	
+	public static File getWorkingDir()
+	{
+		return workingDirectory.get(); 
+	}
 	
+	public static void setWorkingDir(File dir)
+	{
+		workingDirectory.set(dir); 
+	}
 }

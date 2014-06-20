@@ -1,6 +1,9 @@
 package org.data2semantics.platform.util;
 
+import java.io.File;
+
 import org.data2semantics.platform.Global;
+import org.data2semantics.platform.core.ModuleInstance;
 
 public class Functions
 {
@@ -47,4 +50,31 @@ public class Functions
 		
 		return randomString.toString();
 	}
+	
+	public static boolean setCurrentDirectory(File directory)
+	{
+        boolean result = false;  // Boolean indicating whether directory was set
+
+        directory = directory.getAbsoluteFile();
+        if (directory.exists() || directory.mkdirs())
+            result = (System.setProperty("user.dir", directory.getAbsolutePath()) != null);
+
+        return result;
+    }
+
+	/**
+	 * Creates and returns the workspace directory for a given instance. The 
+	 * instance must be executed in this directory.
+	 * 
+	 * @param instance
+	 * @return
+	 */
+	public static File getWorkSpace(ModuleInstance instance)
+	{
+		File dir = new File("workspace/"+instance.module().name()+"/"+instance.index()+"/");
+		dir.mkdirs();
+		
+		return dir;
+	}
+	
 }

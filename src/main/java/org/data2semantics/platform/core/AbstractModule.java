@@ -3,6 +3,7 @@ package org.data2semantics.platform.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -175,8 +176,14 @@ public abstract class AbstractModule implements Module
 	}
 
 	@Override
-	public void instantiate(){
+	public void instantiate() 
+	{
 
+		// * This keeps track of the indices of the instances
+		Map<Module, Integer> instanceIndices = new HashMap<Module, Integer>();
+		for(Module module : workflow.modules())
+			instanceIndices.put(module, 0);
+		
 		if(!ready())
 			throw new IllegalStateException("Failed to instantiate, because the module is not ready");
 		
@@ -185,7 +192,7 @@ public abstract class AbstractModule implements Module
 		
 		Map<Input, InstanceInput> universe = new LinkedHashMap<Input, InstanceInput>();
 		
-		instantiateInputRec(universe,  0);
+		instantiateInputRec(universe,  0, instanceIndices);
 		instantiated = true;
 	
 	}
@@ -201,13 +208,12 @@ public abstract class AbstractModule implements Module
 	 * @param universe
 	 * @param depth
 	 */
-	private void instantiateInputRec( Map<Input, InstanceInput> universe,  int depth) {
+	private void instantiateInputRec( Map<Input, InstanceInput> universe,  int depth, Map<Module, Integer> instanceIndices) {
 		
 			if(depth == inputs().size()){
 				
-				ModuleInstanceImpl newInstance = new ModuleInstanceImpl(universe, instances.size());
-		
 				
+				ModuleInstanceImpl newInstance = new ModuleInstanceImpl(universe, instances.size(), instanceIndices);
 				instances.add(newInstance);
 				
 				return;
@@ -215,29 +221,26 @@ public abstract class AbstractModule implements Module
 			
 			Input curInput = inputs().get(depth);
 			
-			// if curInput is already in the universe this means it was coupled with previous inputs.
-			// first coupled input will immediately assign other related/coupled inputs.
+			// *  if curInput is already in the universe this means it was coupled with previous inputs.
+			//    first coupled input will immediately assign other related/coupled inputs.
 			if(universe.containsKey(curInput)){
 			
-				instantiateInputRec(universe, depth+1);
+				instantiateInputRec(universe, depth+1, instanceIndices);
 			
 			}
-			else
-			if(curInput instanceof RawInput){
+			else if(curInput instanceof RawInput) {
 				
 				Map<Input, InstanceInput> nextUniverse = new LinkedHashMap<Input, InstanceInput>(universe);
 				Object nextValue =  ((RawInput) curInput).value();
 				
 				nextUniverse.put(curInput, new InstanceInput(this, curInput, nextValue));
-				instantiateInputRec(nextUniverse,  depth+1);
+				instantiateInputRec(nextUniverse, depth+1, instanceIndices);
 			
-			} else
-			if(curInput instanceof ReferenceInput){
+			} else if(curInput instanceof ReferenceInput) {
 				
-				handleReferenceInput(universe,  depth, curInput, curInput);
+				handleReferenceInput(universe,  depth, curInput, curInput, instanceIndices);
 			
-			} else
-			if(curInput instanceof MultiInput){
+			} else if(curInput instanceof MultiInput) {
 				
 				List<? extends Input> curMultiInputs = ((MultiInput) curInput).inputs();
 				
@@ -247,12 +250,12 @@ public abstract class AbstractModule implements Module
 					
 					if(curMultiInput instanceof RawInput){
 						
-						handleMultiRawInput(universe, depth, (RawInput) curMultiInput, curInput, i);
+						handleMultiRawInput(universe, depth, (RawInput) curMultiInput, curInput, i, instanceIndices);
 						
 					} else
 					if(curMultiInput instanceof ReferenceInput){
 						
-						handleMultiReferenceInput(universe, depth, (ReferenceInput) curMultiInput, curInput, i);
+						handleMultiReferenceInput(universe, depth, (ReferenceInput) curMultiInput, curInput, i, instanceIndices);
 						
 					} else
 						throw new IllegalArgumentException("Input type not recognized " + curMultiInput);
@@ -264,7 +267,7 @@ public abstract class AbstractModule implements Module
 	}
 
 	private void handleMultiReferenceInput(Map<Input, InstanceInput> universe,
-			int depth, ReferenceInput curMultiRefInput, Input originInput, int idx) {
+			int depth, ReferenceInput curMultiRefInput, Input originInput, int idx, Map<Module, Integer> instanceIndices) {
 			
 			
 			List<ModuleInstance> parentInstances = curMultiRefInput.reference().module().instances();
@@ -319,7 +322,7 @@ public abstract class AbstractModule implements Module
 							}
 						}
 						
-						instantiateInputRec( nextUniverse,  depth+1);
+						instantiateInputRec( nextUniverse,  depth+1, instanceIndices);
 						
 					
 					} else {
@@ -329,7 +332,7 @@ public abstract class AbstractModule implements Module
 							nextUniverse = new LinkedHashMap<Input, InstanceInput>(nextUniverse);
 							nextUniverse.put(originInput, new InstanceInput(this, originInput, v, refInstanceOutput));
 							
-							instantiateInputRec( nextUniverse, depth+1);
+							instantiateInputRec( nextUniverse, depth+1, instanceIndices);
 						}
 						
 					}
@@ -339,7 +342,7 @@ public abstract class AbstractModule implements Module
 	}
 
 	private void handleMultiRawInput(Map<Input, InstanceInput> universe,
-			int depth, RawInput curMultiInput, Input originInput, int idx) {
+			int depth, RawInput curMultiInput, Input originInput, int idx, Map<Module, Integer> instanceIndices) {
 			
 			Map<Input, InstanceInput> nextUniverse = new LinkedHashMap<Input, InstanceInput>(universe);
 		
@@ -347,7 +350,7 @@ public abstract class AbstractModule implements Module
 				Object nextValue =  curMultiInput.value();
 				
 				nextUniverse.put(originInput, new InstanceInput(this, originInput, nextValue));
-				instantiateInputRec(nextUniverse,  depth+1);
+				instantiateInputRec(nextUniverse,  depth+1, instanceIndices);
 				
 			} else {
 				for(String ciName : coupledInputsFor(originInput.name())){
@@ -367,7 +370,7 @@ public abstract class AbstractModule implements Module
 					nextUniverse.put(mi, new InstanceInput(this, mi, ri.value()));
 				}
 				
-				instantiateInputRec(nextUniverse,  depth+1);
+				instantiateInputRec(nextUniverse,  depth+1, instanceIndices);
 			}
 	}
 
@@ -375,7 +378,7 @@ public abstract class AbstractModule implements Module
 
 
 	private void handleReferenceInput(Map<Input, InstanceInput> universe, int depth,
-			Input curInput, Input origin) {
+			Input curInput, Input origin, Map<Module, Integer> instanceIndices) {
 		
 		ReferenceInput ri = (ReferenceInput) curInput;
 		List<ModuleInstance> parentInstances = ri.reference().module().instances();
@@ -398,7 +401,7 @@ public abstract class AbstractModule implements Module
 						nextUniverse = new LinkedHashMap<Input, InstanceInput>(nextUniverse);
 						nextUniverse.put(origin, new InstanceInput(this, origin, nextValue, refInstanceOutput));
 						
-						instantiateInputRec( nextUniverse,  depth+1);
+						instantiateInputRec( nextUniverse,  depth+1, instanceIndices);
 					
 					} else {
 							
@@ -407,7 +410,7 @@ public abstract class AbstractModule implements Module
 							nextUniverse = new LinkedHashMap<Input, InstanceInput>(nextUniverse);
 							nextUniverse.put(origin, new InstanceInput(this, origin, v, refInstanceOutput));
 							
-							instantiateInputRec( nextUniverse, depth+1);
+							instantiateInputRec( nextUniverse, depth+1, instanceIndices);
 						}
 						
 					}
@@ -472,13 +475,16 @@ public abstract class AbstractModule implements Module
 		protected Map<String, InstanceOutput> outputs = new LinkedHashMap<String, InstanceOutput>();
 		protected Map<Input,  InstanceInput> universe = new LinkedHashMap<Input, InstanceInput>();
 		
-		protected int moduleID=0;
+		protected int moduleID = 0;
 		protected long creationTime = 0;
 		protected long startTime = 0;
 		protected long endTime = 0;
 		
-		public ModuleInstanceImpl(Map<Input, InstanceInput> universe, int id) {
-			this.moduleID=id;
+		protected int index;
+		
+		public ModuleInstanceImpl(Map<Input, InstanceInput> universe, int id, Map<Module, Integer> moduleIndices ) 
+		{
+			this.moduleID = id;
 			this.universe = universe;
 			
 			for(Input i : module().inputs()){
@@ -493,6 +499,14 @@ public abstract class AbstractModule implements Module
 				outputs.put(instanceOutput.name(), instanceOutput);
 			}
 			creationTime = System.currentTimeMillis();
+			
+			this.index = moduleIndices.get(module());
+			
+			moduleIndices.put(module(), index + 1);
+		}
+		
+		public int index() {
+			return index;
 		}
 
 		public long creationTime(){
