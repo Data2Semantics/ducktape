@@ -55,9 +55,7 @@ public class Run
 
     	// * Parse and check the command line input
     	Run run = new Run();
-    	
-    	Global.setBase(output);
-    	
+    	    	
     	CmdLineParser parser = new CmdLineParser(run);
     	try
 		{
@@ -86,6 +84,7 @@ public class Run
     	// -- Beyond this point, errors are not the user's fault, and should not
     	//    cause a usage print. 
     	
+    	Global.setBase(output);
     	
     	// * Scan the classpath for any Domains and add them dynamically to the 
     	//   global Domain store.
