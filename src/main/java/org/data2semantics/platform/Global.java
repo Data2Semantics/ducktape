@@ -102,5 +102,6 @@ public class Global implements Serializable
 	public static void setBase(File base)
 	{
 		Global.base = base;
+		log().info("base dir set to: " + base + ", absolute: " + base.getAbsoluteFile());
 	}
 }
