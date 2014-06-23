@@ -1,7 +1,5 @@
 package org.data2semantics.platform.domain;
 
-import static org.data2semantics.platform.util.Functions.getWorkSpace;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -64,7 +62,7 @@ public class JavaDomain implements Domain
 	@Override
 	public boolean execute(ModuleInstance instance, List<String> errors, Map<String, Object> outputs)
 	{
-		Global.setWorkingDir(getWorkSpace(instance));
+		Global.setWorkingDir(instance);
 		
 		// Three cases based on inputs :
 		Class<?> curClass =  loadClass(instance.module().source());

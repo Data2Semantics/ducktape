@@ -56,6 +56,8 @@ public class Run
     	// * Parse and check the command line input
     	Run run = new Run();
     	
+    	Global.setBase(output);
+    	
     	CmdLineParser parser = new CmdLineParser(run);
     	try
 		{

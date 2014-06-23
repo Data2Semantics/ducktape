@@ -61,20 +61,5 @@ public class Functions
 
         return result;
     }
-
-	/**
-	 * Creates and returns the workspace directory for a given instance. The 
-	 * instance must be executed in this directory.
-	 * 
-	 * @param instance
-	 * @return
-	 */
-	public static File getWorkSpace(ModuleInstance instance)
-	{
-		File dir = new File("workspace/"+instance.module().name()+"/"+instance.index()+"/");
-		dir.mkdirs();
-		
-		return dir;
-	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.domain.CommandLineDomain;
 import org.data2semantics.platform.domain.Domain;
 import org.data2semantics.platform.domain.JavaDomain;
@@ -14,7 +15,11 @@ import org.data2semantics.platform.domain.PythonDomain;
 
 public class Global implements Serializable
 {
-	private static ThreadLocal<File> workingDirectory = new ThreadLocal<File>();
+	//* the working directory for the current instance
+	private static ThreadLocal<File> instanceWorkingDirectory = new ThreadLocal<File>();
+	
+	private static File base = new File(".");
+	
 	
 	/**
 	 * 
@@ -31,7 +36,7 @@ public class Global implements Serializable
 		domains.put("python", new PythonDomain());
 		domains.put("cli", new CommandLineDomain());
 		
-		workingDirectory.set(new File("."));
+		instanceWorkingDirectory.set(new File(base, "."));
 	}
 
 	public static boolean domainExists(String name)
@@ -77,11 +82,25 @@ public class Global implements Serializable
 	
 	public static File getWorkingDir()
 	{
-		return workingDirectory.get(); 
+		return instanceWorkingDirectory.get(); 
 	}
 	
-	public static void setWorkingDir(File dir)
+	/**
+	 * Sets the working directory for the currently executing instance. This
+	 * value is thread-local. 
+	 * @param dir
+	 */
+	public static void setWorkingDir(ModuleInstance instance)
 	{
-		workingDirectory.set(dir); 
+		String suffix = "workspace/" + instance.module().name() + "/" + instance.index() + "/";
+		File dir = new File(base, suffix);
+		dir.mkdirs();
+		
+		instanceWorkingDirectory.set(dir); 
+	}
+
+	public static void setBase(File base)
+	{
+		Global.base = base;
 	}
 }
