@@ -806,21 +806,23 @@ public class JavaDomain implements Domain
 	@Override
 	public boolean printInput(String source, String name)
 	{
-	Class<?> theClass = loadClass(source);
+		Class<?> theClass = loadClass(source);
 		
 		Method[] methods = theClass.getMethods();
 		Field[] fields = theClass.getFields();
 		Constructor<?>[] constructors = theClass.getConstructors();
 		
-		for(Field f : fields){
+		for(Field f : fields)
+		{
 			In inputAnnotation = getInputAnnotations(f);
-			if(inputAnnotation != null && inputAnnotation.name().equals(name)){
+			
+			if(inputAnnotation != null && inputAnnotation.name().equals(name))
 				return inputAnnotation.print();
-			}
 		}
 
 		// Case where input are defined as parameter of constructors.
-		for(Constructor<?> c : constructors){
+		for(Constructor<?> c : constructors)
+		{
 			Annotation [][] parameterAnnotations = c.getParameterAnnotations();
 			for(int i =0; i< parameterAnnotations.length;i++){
 				for(int j=0;j< parameterAnnotations[i].length;j++){
@@ -877,17 +879,22 @@ public class JavaDomain implements Domain
 		{
 			
 			Annotation[] annotations = m.getAnnotations();
-			for(Annotation a : annotations){
+			for(Annotation a : annotations)
+			{
 				if(a instanceof Out){
 					Out outAnnotation = (Out) a;
-					if(outAnnotation.name().equals(name)){
+					if(outAnnotation.name().equals(name))
+					{
 						return outAnnotation.print();
 
 					}
 				}
+				
 				if(a instanceof Main){
-					Main mainAnnotation = (Main)a;
-					if(mainAnnotation.name().equals(name)){
+					Main mainAnnotation = (Main) a;
+					
+					if(mainAnnotation.name().equals(name))
+					{
 						return mainAnnotation.print();
 					}
 				}

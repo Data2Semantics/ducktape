@@ -27,6 +27,7 @@ import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.InstanceOutput;
 import org.data2semantics.platform.core.data.MultiInput;
 import org.data2semantics.platform.core.data.Output;
+import org.data2semantics.platform.core.data.RawInput;
 import org.data2semantics.platform.core.data.ReferenceInput;
 import org.data2semantics.platform.util.FrequencyModel;
 import org.data2semantics.platform.util.Functions;
@@ -235,7 +236,6 @@ public class HTMLReporter implements Reporter
 
 				List<String> inputNames = new ArrayList<String>();
 				for (Input input : module.inputs())
-					if(input.print())
 						inputNames.add(input.name());
 				
 				templateData.put("input_names", inputNames);
@@ -250,6 +250,15 @@ public class HTMLReporter implements Reporter
 					for (InstanceInput input : instance.inputs())
 						if(input.original().print())
 							instanceInputs.add(input.value().toString());
+						else 
+						{
+							String value = "raw input, not printed";
+							
+							InstanceOutput ref = input.instanceOutput();
+							if(ref != null)
+								value = ref.original().module().name() + "." + ref.original().name();
+							instanceInputs.add(value);
+						}
 
 					// * Collect the instance information
 					Map<String, Object> instanceMap = new LinkedHashMap<String, Object>();
@@ -267,6 +276,7 @@ public class HTMLReporter implements Reporter
 			templateData.put("instances", instances);
 
 			List<Map<String, Object>> outputs = new ArrayList<Map<String, Object>>();
+			
 			for (Output output : module.outputs())
 				if(output.print())
 				{
@@ -286,7 +296,17 @@ public class HTMLReporter implements Reporter
 						List<String> inputs = new ArrayList<String>();
 						for (InstanceInput input : instance.inputs())
 							if(input.original().print())
+							{
 								inputs.add(input.value().toString());
+							} else
+							{
+								String value = "raw input, not printed";
+								
+								InstanceOutput ref = input.instanceOutput();
+								if(ref != null)
+									value = ref.original().module().name() + "." + ref.original().name();
+								inputs.add(value);	
+							}
 	
 						instanceMap.put("inputs", inputs);
 	
@@ -391,6 +411,7 @@ public class HTMLReporter implements Reporter
 			List<Map<String, Object>> inputs = new ArrayList<Map<String, Object>>();
 
 			for (InstanceInput input : instance.inputs())
+			{
 				if(input.original().print())
 				{
 					Map<String, Object> inputMap = new LinkedHashMap<String, Object>();
@@ -401,13 +422,30 @@ public class HTMLReporter implements Reporter
 						);
 	
 					inputs.add(inputMap);
+				} else 
+				{
+					Map<String, Object> inputMap = new LinkedHashMap<String, Object>();
+					inputMap.put("name", input.name());
+					inputMap.put("description", input.description());
+					
+					String value = "raw input, not printed";
+							
+					InstanceOutput ref = input.instanceOutput();
+					if(ref != null)
+						value = ref.original().module().name() + "." + ref.original().name();
+					
+					inputMap.put("value", value);
+	
+					inputs.add(inputMap);
 				}
+			}
 
 			templateData.put("inputs", inputs);
 
 			List<Map<String, Object>> outputs = new ArrayList<Map<String, Object>>();
 
 			for (InstanceOutput output : instance.outputs())
+			{
 				if(output.original().print())
 				{
 					Map<String, Object> outputMap = new LinkedHashMap<String, Object>();
@@ -420,6 +458,7 @@ public class HTMLReporter implements Reporter
 	
 					outputs.add(outputMap);
 				}
+			}
 
 			templateData.put("outputs", outputs);
 

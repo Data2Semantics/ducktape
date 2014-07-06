@@ -20,7 +20,7 @@ public class InstanceInput extends Input
 	
 	public InstanceInput(Module module, Input original, Object value)
 	{
-		super(original.name(), original.description(), original.dataType(), module);
+		super(original.name(), original.description(), original.dataType(), module, original.print());
 		this.original = original;
 		this.value = value;
 		this.instance = null;
@@ -30,7 +30,7 @@ public class InstanceInput extends Input
 
 	public InstanceInput(Module module, Input original, ModuleInstance instance, Object value)
 	{
-		super(original.name(), original.description(), original.dataType(), module);
+		super(original.name(), original.description(), original.dataType(), module, original.print());
 		this.original = original;
 		this.instance = instance;
 		this.value = value;
@@ -40,7 +40,7 @@ public class InstanceInput extends Input
 	
 	public InstanceInput(Module module, Input original,
 			Object nextValue, InstanceOutput refInstanceOutput) {
-		super(original.name(), original.description(), original.dataType(), module);
+		super(original.name(), original.description(), original.dataType(), module, original.print());
 		
 		this.original = original;
 		this.value = nextValue;

@@ -120,7 +120,7 @@ public class WorkflowParser {
 			
 			parseInputAggregators(builder, moduleName, aggregators, inputMap);
 						
-			// ask the domain object for the outputs
+			// * ask the domain object for the outputs
 			Map<String, DataType> outputTypeMap = getOutputTypes(sourcePath, domain);
 			
 			parseOutputResults(builder, moduleName, results, outputTypeMap);
@@ -162,7 +162,6 @@ public class WorkflowParser {
 				String description = domain.inputDescription(sourcePath, inputName);
 				boolean print = domain.printInput(sourcePath, inputName);
 				
-				
 				builder.refInput(moduleName, inputName, description, referencedModule,
 						referencedOutput, inputType, print);
 				
@@ -172,22 +171,27 @@ public class WorkflowParser {
 				DataType inputDataType = domain.inputType(sourcePath, inputName);
 
 				String description = domain.inputDescription(sourcePath, inputName);
+				boolean print = domain.printInput(sourcePath, inputName);
 				
-				// First handle multi input case, now we include  the case that items in this list this might also be reference.
+				// First handle multi input case, now we include the case that 
+				// items in this list this might also be reference.
 				if(inputValue instanceof List<?>){
 					
-					// Each item in the list matches the expected input datatype in this domain, we are doing a sweep a.k.a. multi value solely consisting of raw inputs.
-					if(listItemMatch((List<?>) inputValue, inputDataType, domain)){
-						builder.multiInput(moduleName,  description, inputName, (List<?>)inputValue, inputDataType);
+					// Each item in the list matches the expected input datatype 
+					// in this domain, we are doing a sweep a.k.a. multi value 
+					// solely consisting of raw inputs.
+					if(listItemMatch((List<?>) inputValue, inputDataType, domain))
+					{
+						builder.multiInput(moduleName,  description, inputName, (List<?>)inputValue, inputDataType, print);
 					} else 
 					// Either items in the list are references or they match the expected input data type
-					if(listItemMatchOrReference((List<?>)inputValue, inputDataType, domain)){
-						builder.multiInputRef(moduleName, description, inputName, (List<?>) inputValue, inputDataType);
+					if(listItemMatchOrReference((List<?>)inputValue, inputDataType, domain))
+					{
+						builder.multiInputRef(moduleName, description, inputName, (List<?>) inputValue, inputDataType, print);
 					} else
 					// The input are expecting a list.
-					if(domain.valueMatches(inputValue, inputDataType)){
-						boolean print = domain.printInput(sourcePath, inputName);
-						
+					if(domain.valueMatches(inputValue, inputDataType))
+					{						
 						builder.rawInput(moduleName, description, inputName, inputValue, domain.inputType(sourcePath, inputName), print);
 							
 					} else
@@ -195,10 +199,11 @@ public class WorkflowParser {
 					
 				}
 				else 
-				if(domain.valueMatches(inputValue, inputDataType)){
-					boolean print = domain.printInput(sourcePath, inputName);
-
-					builder.rawInput(moduleName, description, inputName, inputValue, domain.inputType(sourcePath, inputName), print);
+				if(domain.valueMatches(inputValue, inputDataType))
+				{
+					builder.rawInput(
+							moduleName, description, inputName, inputValue, 
+							domain.inputType(sourcePath, inputName), print);
 					
 				}
 				

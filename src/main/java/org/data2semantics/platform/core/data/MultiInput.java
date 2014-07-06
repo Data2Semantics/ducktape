@@ -18,9 +18,9 @@ public class MultiInput extends Input
 	private List<? extends Input> inputs;
 	
 	public MultiInput(String name, String description, DataType dataType, Module module,
-			List<? extends Input> inputs)
+			List<? extends Input> inputs, boolean print)
 	{
-		super(name, description, dataType, module);
+		super(name, description, dataType, module, print);
 		this.inputs = inputs;
 	}
 

@@ -5,14 +5,6 @@ import org.data2semantics.platform.core.Module;
 public class RawInput extends Input
 {
 	private Object value = null;
-
-
-	public RawInput(Object value, String name, String description, DataType dataType,
-			Module module)
-	{
-		super(name, description, dataType, module);
-		this.value = value;
-	}
 	
 	public RawInput(Object value, String name, String description, DataType dataType,
 			Module module, boolean print)

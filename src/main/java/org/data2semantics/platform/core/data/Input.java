@@ -12,13 +12,13 @@ public abstract class Input implements Data
 	private boolean isDataset = false;
 	private boolean isAggregator = false;
 	
-	public Input(String name, String description,  DataType dataType, Module module)
-	{
-		this.name = name;
-		this.dataType = dataType;
-		this.module = module;
-		this.description = description;
-	}
+//	public Input(String name, String description,  DataType dataType, Module module)
+//	{
+//		this.name = name;
+//		this.dataType = dataType;
+//		this.module = module;
+//		this.description = description;
+//	}
 	
 	public Input(String name, String description,  DataType dataType, Module module, boolean print)
 	{
