@@ -31,6 +31,7 @@ import org.data2semantics.platform.core.data.RawInput;
 import org.data2semantics.platform.core.data.ReferenceInput;
 import org.data2semantics.platform.util.FrequencyModel;
 import org.data2semantics.platform.util.Functions;
+import org.data2semantics.platform.util.Statistics;
 
 import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.template.JadeTemplate;
@@ -40,10 +41,12 @@ public class HTMLReporter implements Reporter
 	public static List<Parser> parsers = new ArrayList<Parser>();
 	
 	static  {
+		parsers.add(new NumberListParser());
 		parsers.add(new ImageParser());
 		parsers.add(new ImageListParser());
-		parsers.add(new ToStringParser());
 		
+		// this should be the last one
+		parsers.add(new ToStringParser());
 	}
 	
 	private Workflow workflow;
@@ -637,6 +640,52 @@ public class HTMLReporter implements Reporter
 		}
 		
 	}
+	
+	public static class NumberListParser implements Parser {
+
+		@Override
+		public boolean accept(Object value)
+		{
+			if(! (value instanceof List))
+				return false;
+						
+			if(! Statistics.isNumeric((List<?>)value))
+				return false;
+			
+			return true;
+		}
+
+		@Override
+		public String parse(Object value, String name, ReportWriter writer, File dir)
+		{
+			List<Number> values = (List<Number>) value;
+		
+			Map<String, Object> data = new LinkedHashMap<String, Object>();
+			
+			data.put("mean", Statistics.mean(values));
+			data.put("median", Statistics.median(values));
+			data.put("mode", Statistics.mode(values));
+			data.put("std", Statistics.standardDeviation(values));
+			data.put("min", Statistics.min(values));
+			data.put("max", Statistics.max(values));
+			data.put("raw", values.toString());
+			
+			// * Load the template
+			JadeTemplate tpl;
+			try
+			{
+				tpl = writer.getTemplate("parser.numberlist.jade");
+			} catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+
+			// * Process the template
+
+			return writer.jadeConfig().renderTemplate(tpl, data);
+		}
+
+	}	
 	
 	public static class ImageParser implements Parser {
 

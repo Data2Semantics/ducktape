@@ -1,0 +1,23 @@
+div.number-list
+  p This result contains a list of numeric values.
+  table
+    tr
+      th mean
+      td #{mean}
+    tr
+      th standard deviation (unbiased)
+      td #{std} 
+    tr
+      th median
+      td #{median}
+    tr
+      th mode
+      td #{mode}
+    tr
+      th range
+      td [#{min}, #{max}]
+
+  div.raw
+    h3 raw values:
+    #{raw}
+  
