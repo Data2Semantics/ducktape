@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -19,18 +20,24 @@ import org.openrdf.model.BNode;
 import org.openrdf.model.Model;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LinkedHashModel;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.util.Literals;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.RepositoryResult;
+import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.ntriples.NTriplesUtil;
+import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
+import org.openrdf.sail.memory.MemoryStore;
 
 
 
@@ -128,7 +135,7 @@ public class PROVReporter implements Reporter {
 		// Define all the URI's that we are going to (re)use
 		
 		URI platformURI = factory.createURI(RESOURCE + "ducktape/", InetAddress.getLocalHost().getHostName() + "/" + Global.getSerialversionuid());
-		URI workflowURI = factory.createURI(RESOURCE + "workflow/", workflow.file().toURI().toURL() + "/" + workflowMD5sum);
+		URI workflowURI = factory.createURI(RESOURCE + "workflow/", URLEncoder.encode(workflow.file().toURI().toString(),"UTF-8") + "/" + workflowMD5sum);
 			
 		// The software is the agent and the workflow is the plan
 		stmts.add(factory.createStatement(platformURI, RDF.TYPE, provAgentURI)); 
@@ -260,6 +267,27 @@ public class PROVReporter implements Reporter {
 				}
 			}
 		}
+		
+		Repository tempRepoForInference = new SailRepository(new ForwardChainingRDFSInferencer(new MemoryStore()));
+		try {
+			tempRepoForInference.initialize();
+			RepositoryConnection tempConnection = tempRepoForInference.getConnection();
+			
+			tempConnection.add(stmts);
+			 
+			RepositoryResult<Statement> results = tempConnection.getStatements(null, null, null, true);
+			
+			stmts.clear();
+			
+			while(results.hasNext()){
+				stmts.add(results.next());
+			}
+			
+		} catch (RepositoryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		
 		File file = new File(root, PROV_FILE);
 		RDFWriter writer = Rio.createWriter(RDFFormat.TURTLE, new FileWriter(file));
