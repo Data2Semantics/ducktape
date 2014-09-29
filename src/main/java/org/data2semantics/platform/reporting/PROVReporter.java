@@ -214,8 +214,8 @@ public class PROVReporter implements Reporter {
 					
 					// If we can create a literal of the value, save it and create a rdfs-label
 					if (Literals.canCreateLiteral(io.value())) {
-						stmts.add(factory.createStatement(ioURI, d2sValueURI, Literals.createLiteral(factory, io.value())));
-						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io)));		
+						stmts.add(factory.createStatement(ioURI, RDF.VALUE, Literals.createLiteral(factory, io.value())));
+						stmts.add(factory.createStatement(ioURI, RDFS.LABEL, Literals.createLiteral(factory, io.name())));		
 					}
 					
 					if (io.original().isResult()) {
@@ -249,8 +249,8 @@ public class PROVReporter implements Reporter {
 						
 						// If we can create a literal
 						if (Literals.canCreateLiteral(ii.value())) {
-							stmts.add(factory.createStatement(iiURI, d2sValueURI, Literals.createLiteral(factory, ii.value())));
-							stmts.add(factory.createStatement(iiURI, RDFS.LABEL, Literals.createLiteral(factory, ii)));			
+							stmts.add(factory.createStatement(iiURI, RDF.VALUE, Literals.createLiteral(factory, ii.value())));
+							stmts.add(factory.createStatement(iiURI, RDFS.LABEL, Literals.createLiteral(factory, ii.name())));			
 						}			
 					}
 							
