@@ -13,7 +13,7 @@ import org.data2semantics.platform.core.Module;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.reporting.Reporter;
 
-public class ThreadedLocalExecutionProfile extends ExecutionProfile {
+public class ThreadedLocalExecutionProfile implements ExecutionProfile {
 
 	private int threadPoolSize = 10;
 	
@@ -55,9 +55,9 @@ public class ThreadedLocalExecutionProfile extends ExecutionProfile {
 				}
 				
 				// Make sure all the instance finished before continue to next batch of modules.
-				for(Future<Boolean> res : results ){
+				for(Future<Boolean> result : results ){
 					try {
-						res.get();
+						result.get();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -75,5 +75,7 @@ public class ThreadedLocalExecutionProfile extends ExecutionProfile {
 		
 		
 	}
+
+
 
 }

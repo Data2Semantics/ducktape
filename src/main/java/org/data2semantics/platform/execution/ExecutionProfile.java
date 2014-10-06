@@ -1,14 +1,9 @@
 package org.data2semantics.platform.execution;
 
-import java.io.File;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.data2semantics.platform.core.Module;
-import org.data2semantics.platform.core.ModuleInstance;
-import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.reporting.Reporter;
-import org.data2semantics.platform.resourcespace.ResourceSpace;
 
 
 
@@ -22,70 +17,13 @@ import org.data2semantics.platform.resourcespace.ResourceSpace;
  * @author wibisono
  *
  */
-abstract public class ExecutionProfile {
-	
-		private final static Logger LOG = Logger.getLogger(ExecutionProfile.class.getName());
+public interface ExecutionProfile {
 	
 		/**
-		 * Attempt to execute abstract modules, returning the status of the current module being executed.
-		 * Maybe while enacting, we need also to have access to the resource space. 
-		 * 
-		 * The results then needs to be returned to resource space.
-		 * I am not sure why this has to return a state, maybe not, just boolean success or not.
-		 * @param currentWorkflow 
-		 * @param m
-		 * @param resultSpace 
-		 * @return whether the execution is successful
+		 * Execute one by one list of modules within a workflow which are already sorted by the rank.
+		 * @param modules	modules within a workflow, which are already sorted based on their rank.
+		 * @param reporters  reporters reporting workflow execution.
 		 */
-		public boolean executeModule(ModuleInstance module, Workflow workflow, ResourceSpace space)
-		{
-				boolean success = true;		
-				
-				// Check each inputs of current Module, if they are all ready.
-				
-				// If there are references from other retrieve all required 
-				// inputs from Resource Space
-				
-				// Execute the module based on inputs.
-				
-				// Now here we will have the cases, 
-				
-				// Perhaps at this stage actually all the inputs are already 
-				// resolved ?
-				//List<Input> inputs = module.module().inputs();
-				
-				// If available inputs are exactly the same type with the 
-				// expected inputs then we will only execute once.
-				
-				// Confused, when is it better to do this check haven't this 
-				// been done already at this point?
-				
-				LOG.info("Executing module :- " + module);
-				//success = module.execute();
-				
-//				
-//				if(success){
-//					currentModule.setState(State.FINISHED);
-//				} else
-//					currentModule.setState(State.FAILED);
-//				I think perhaps modules should set their own state  --Peter
-				
-				// At the end of this all we will then return result to 
-				// result space
-				
-				return success;
-				
-		}
 		
-		
-		public boolean atomicModuleExecution(
-				Module currentModule, ResourceSpace resultSpace)
-		{
-			boolean success = true;
-			
-			return success;
-		}
-
-
-		public abstract void executeModules(List<Module> modules, List<Reporter> reporters);
+		public void executeModules(List<Module> modules, List<Reporter> reporters);
 }
