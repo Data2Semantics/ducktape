@@ -1,6 +1,8 @@
 package org.data2semantics.platform.core.data;
 
-public class JavaType implements DataType
+import java.io.Serializable;
+
+public class JavaType implements DataType, Serializable
 {
 	
 	protected Class<?> javaClass;

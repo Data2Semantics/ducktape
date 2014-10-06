@@ -1,5 +1,6 @@
 package org.data2semantics.platform.core;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import org.data2semantics.platform.core.data.InstanceOutput;
  * 
  * 
  */
-public interface ModuleInstance
+public interface ModuleInstance extends Serializable
 {
 	public Module module();
 

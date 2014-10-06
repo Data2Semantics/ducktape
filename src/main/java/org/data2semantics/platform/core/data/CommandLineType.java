@@ -35,9 +35,10 @@ public class CommandLineType implements DataType {
 	// Getting java equivalent
 	public Class<?> clazz() {
 		switch (type) {
-		case INTEGER:
-			return Integer.class;
-
+			case INTEGER:
+				return Integer.class;
+			case STRING:
+				return String.class;
 		}
 
 		return String.class;
@@ -52,6 +53,8 @@ public class CommandLineType implements DataType {
 		switch (type) {
 			case INTEGER:
 				return Integer.valueOf(stringValue);
+			case STRING :
+				return String.class;
 
 		}
 

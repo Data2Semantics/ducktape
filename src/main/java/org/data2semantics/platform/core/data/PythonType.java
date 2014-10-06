@@ -116,6 +116,9 @@ public class PythonType implements DataType {
 				
 			case DICTIONARY:
 				return new HashMap<String, String>();
+				
+			case BOOLEAN:
+				return new Boolean(stringValue);
 
 		}
 

@@ -1,9 +1,11 @@
 package org.data2semantics.platform.core.data;
 
+import java.io.Serializable;
+
 import org.data2semantics.platform.core.Module;
 
 
-public abstract class Input implements Data 
+public abstract class Input implements Data, Serializable
 {
 	private String name, description;
 	private DataType dataType;

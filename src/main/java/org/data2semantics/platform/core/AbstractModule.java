@@ -1,5 +1,6 @@
 package org.data2semantics.platform.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.InstanceOutput;
@@ -30,7 +30,7 @@ import org.data2semantics.platform.domain.Domain;
  * @author wibisono
  *
  */
-public abstract class AbstractModule implements Module
+public abstract class AbstractModule implements Module, Serializable
 {
 	protected String name;
 	protected Domain domain;
@@ -52,7 +52,10 @@ public abstract class AbstractModule implements Module
 	
 	protected boolean instantiated = false;
 	
-	private final static Logger LOG=Logger.getLogger(AbstractModule.class.getName());
+	
+	public AbstractModule(){
+		
+	}
 	
 	public AbstractModule(Workflow workflow, Domain domain) {
 		this.domain = domain;
@@ -61,6 +64,11 @@ public abstract class AbstractModule implements Module
 	
 	public Workflow workflow(){
 		return workflow;
+	}
+
+	public int repeats()
+	{
+		return 0;
 	}
 
 	public List<Input> inputs() {
@@ -135,14 +143,6 @@ public abstract class AbstractModule implements Module
 		return Collections.unmodifiableList(instances);
 	}
 	
-	public int repeats()
-	{
-		return 0;
-	}
-
-	
-
-	
 	public boolean dependsOn(Module curModule) {
 		if(parents().contains(curModule))
 			return true;
@@ -213,7 +213,7 @@ public abstract class AbstractModule implements Module
 			if(depth == inputs().size()){
 				
 				
-				ModuleInstanceImpl newInstance = new ModuleInstanceImpl(universe, instances.size(), instanceIndices);
+				ModuleInstanceImpl newInstance = new ModuleInstanceImpl(this, universe, instances.size(), instanceIndices);
 				instances.add(newInstance);
 				
 				return;
@@ -315,8 +315,6 @@ public abstract class AbstractModule implements Module
 								// We are selecting next avlue from the same module instance
 								InstanceOutput refIO = curModuleInstance.output(ri.reference().name()); 
 								nextValue = refIO.value();
-								
-								LOG.info("Assigning "+ri.reference().module().name()+"."+ri.reference().name()+" into "+name()+"."+coupledMi.name());
 								
 								nextUniverse.put(coupledMi, new InstanceInput(this, coupledMi, nextValue, refIO));
 							}
@@ -468,12 +466,18 @@ public abstract class AbstractModule implements Module
 		return domain;
 	}
 	
-	private class ModuleInstanceImpl implements ModuleInstance
+	private class ModuleInstanceImpl implements ModuleInstance, Serializable
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2476861221359610746L;
 		protected State state = State.READY;
 		protected Map<String, InstanceInput> inputs = new LinkedHashMap<String, InstanceInput>();
 		protected Map<String, InstanceOutput> outputs = new LinkedHashMap<String, InstanceOutput>();
 		protected Map<Input,  InstanceInput> universe = new LinkedHashMap<Input, InstanceInput>();
+		protected Map<Module, Integer> moduleIndices = new LinkedHashMap<Module, Integer>();
+		protected Module module;
 		
 		protected int moduleID = 0;
 		protected long creationTime = 0;
@@ -482,11 +486,15 @@ public abstract class AbstractModule implements Module
 		
 		protected int index;
 		
-		public ModuleInstanceImpl(Map<Input, InstanceInput> universe, int id, Map<Module, Integer> moduleIndices ) 
+		public ModuleInstanceImpl(Module m, Map<Input, InstanceInput> universe, int id, Map<Module, Integer> moduleIndices ) 
 		{
+			this.module = m;
 			this.moduleID = id;
 			this.universe = universe;
-			
+			this.moduleIndices = moduleIndices;
+			initialize();
+		}
+		private void initialize(){
 			for(Input i : module().inputs()){
 				
 					  InstanceInput ii = universe.get(i);
@@ -527,7 +535,7 @@ public abstract class AbstractModule implements Module
 		
 		public Module module()
 		{
-			return AbstractModule.this;
+			return module;
 		}
 
 		public List<InstanceInput> inputs()
@@ -598,11 +606,14 @@ public abstract class AbstractModule implements Module
 			
 			return true;
 		}
+		
 
 		@Override
 		public Branch branch() {
 			return null;
 		}
+	
+	
 	}
 
 	static class BranchImpl implements Branch {

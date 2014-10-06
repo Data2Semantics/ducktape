@@ -15,7 +15,7 @@ import org.data2semantics.platform.domain.Domain;
  * 
  * Apart from inheritance, modules should be immutable after creation. 
  * 
- * @author wibisono
+ * @author Wibisono
  *
  */
 public interface Module 
@@ -56,11 +56,26 @@ public interface Module
 		public boolean coupledInputs(String x, String y);
 		
 		
-		public boolean isDataSet(String inputName);
+		/**
+		 * See whether this input is a dataset
+		 * @param inputName
+		 * @return
+		 */
+		public boolean isInputDataSet(String inputName);
 		
-		public boolean isAggregator(String inputName);
+		/**
+		 * Check whether the inputName is an aggregator
+		 * @param inputName
+		 * @return
+		 */
+		public boolean isInputAggregator(String inputName);
 		
-		public boolean isResult(String outputName);
+		/**
+		 * Check whether outputName is a result (for reporting)
+		 * @param outputName
+		 * @return
+		 */
+		public boolean isOutputResult(String outputName);
 		
 		/**
 		 * Function to get input with argument name
@@ -154,5 +169,12 @@ public interface Module
 		 */
 		public Domain domain();
 
-		public boolean dependsOn(Module curModule);
+		/**
+		 * Returns whether or not this module depends on another module.
+		 * @param otherModule
+		 * @return
+		 */
+		public boolean dependsOn(Module otherModule);
+		
+		
 }

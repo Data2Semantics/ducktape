@@ -1,8 +1,10 @@
 package org.data2semantics.platform.core.data;
 
+import java.io.Serializable;
+
 import org.data2semantics.platform.core.Module;
 
-public class Output implements Data 
+public class Output implements Data , Serializable
 {
 	private String name, description;
 	private Module module;

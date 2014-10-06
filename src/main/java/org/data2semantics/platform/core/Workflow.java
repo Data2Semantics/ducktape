@@ -1,6 +1,7 @@
 package org.data2semantics.platform.core;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.model.Dependency;
-import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.data.DataType;
 import org.data2semantics.platform.core.data.Input;
 import org.data2semantics.platform.core.data.JavaType;
@@ -37,7 +37,7 @@ import org.data2semantics.platform.exception.InconsistentWorkflowException;
  * @author Peter
  *
  */
-public final class Workflow {
+public final class Workflow implements Serializable{
 	
 	// * Map from names to modules
 	private Map<String, WorkflowBuilder.ModuleImpl> modules = new LinkedHashMap<String, WorkflowBuilder.ModuleImpl>();
@@ -74,7 +74,12 @@ public final class Workflow {
 	public File file() {
 		return file;
 	}
-	
+	/**
+	 * Returns modules within a workflow, sorted according to their ranks.
+	 * This means that iterating through this modules would start with the one with the lowest ranks,
+	 * Which in turns means the first ones, with lowest ranks, are the ones without dependency.
+	 * @return
+	 */
 	public List<Module> modules(){
 			if(sortedList != null) return sortedList;
 			
@@ -87,6 +92,11 @@ public final class Workflow {
 		return modules.get(name);
 	}
 
+	/**
+	 * Compare modules based on their ranks.
+	 * @author Adianto
+	 *
+	 */
 	
 	private class ModuleComparator implements Comparator<Module>
 	{
@@ -368,11 +378,11 @@ public final class Workflow {
 			// Set boolean flag for individual inputs and outputs
 			for (Module m : workflow.modules()){
 				for(Input i : m.inputs()){
-					i.dataset(m.isDataSet(i.name()));
-					i.aggregator(m.isAggregator(i.name()));
+					i.dataset(m.isInputDataSet(i.name()));
+					i.aggregator(m.isInputAggregator(i.name()));
 				}
 				for(Output o : m.outputs()) {
-					o.result(m.isResult(o.name()));
+					o.result(m.isOutputResult(o.name()));
 				}
 			}
 			
@@ -458,9 +468,12 @@ public final class Workflow {
 				throw new IllegalStateException("This workflowbuilder is dead. The method workflow has been called.");
 		}
 		
-		private static class ModuleImpl extends AbstractModule 
+		private static class ModuleImpl extends AbstractModule implements Serializable
 		{
 
+			public ModuleImpl(){
+				
+			}
 			
 			public ModuleImpl(Workflow workflow, String name, Domain domain)
 			{
@@ -582,17 +595,17 @@ public final class Workflow {
 			}
 
 			@Override
-			public boolean isDataSet(String inputName) {
+			public boolean isInputDataSet(String inputName) {
 				return dataSets.contains(inputName);
 			}
 
 			@Override
-			public boolean isResult(String outputName) {
+			public boolean isOutputResult(String outputName) {
 				return results.contains(outputName);
 			}
 
 			@Override
-			public boolean isAggregator(String inputName) {
+			public boolean isInputAggregator(String inputName) {
 				return aggregators.contains(inputName);
 			}
 		}
