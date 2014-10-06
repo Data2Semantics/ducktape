@@ -32,8 +32,6 @@ public class SimpleModuleWrapper extends AbstractModule{
 	ClassLoader loader;
 	Class<?> myclass;
 	
-	
-	
 	/**
 	 * Both input and output are key values.
 	 */
@@ -53,7 +51,7 @@ public class SimpleModuleWrapper extends AbstractModule{
 	 * 
 	 * @param annotatedModule
 	 */
-	public void wrapModule(Map annotatedModule){
+	public void wrapModule(Map  annotatedModule){
 		
 		name = (String) annotatedModule.get("name");
 		
@@ -78,6 +76,7 @@ public class SimpleModuleWrapper extends AbstractModule{
 				actualInputMap.put(key.toString(), inputMap.get(key));
 			}
 		}
+		
 		LOG.log(Level.DEBUG,"Module name " + name + " reference size " + references.size());
 			
 		// IF there are no references means this module is ready
@@ -88,9 +87,6 @@ public class SimpleModuleWrapper extends AbstractModule{
 			setState(State.BLOCKED);
 	}
 
-	
-	
-	
 	
 	private void setState(State ready) {
 		
@@ -207,17 +203,17 @@ public class SimpleModuleWrapper extends AbstractModule{
 	}
 
 	@Override
-	public boolean isDataSet(String inputName) {
+	public boolean isInputDataSet(String inputName) {
 		return dataSets.contains(inputName);
 	}
 
 	@Override
-	public boolean isResult(String outputName) {
+	public boolean isOutputResult(String outputName) {
 		return results.contains(outputName);
 	}
 
 	@Override
-	public boolean isAggregator(String inputName) {
+	public boolean isInputAggregator(String inputName) {
 		return aggregators.contains(inputName); 
 	}
 	

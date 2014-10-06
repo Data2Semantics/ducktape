@@ -2,10 +2,7 @@ package org.data2semantics.platform.util;
 
 import static org.data2semantics.platform.util.Series.series;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

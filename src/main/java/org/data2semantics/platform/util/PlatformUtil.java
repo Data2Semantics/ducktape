@@ -12,14 +12,17 @@ import java.util.Map;
 import java.util.Vector;
 
 
-import org.apache.log4j.Logger;
+
+import java.util.logging.Logger;
+
 import org.data2semantics.platform.annotation.In;
 import org.data2semantics.platform.annotation.Main;
 import org.data2semantics.platform.annotation.Module;
 import org.data2semantics.platform.annotation.Out;
+import org.data2semantics.platform.domain.PythonDomain;
 
 public class PlatformUtil {
-	private final static Logger log = Logger.getLogger(PlatformUtil.class);
+	private final static 	Logger log = Logger.getLogger(PlatformUtil.class.getName());
 	/**
 	 * Call default constructor of a module and return created object
 	 * @throws InvocationTargetException 
@@ -149,7 +152,7 @@ public class PlatformUtil {
 				for(Annotation curAnnotation : annotations[i]){
 					if(curAnnotation instanceof In){
 						result.add(m);
-						log.debug(paramTypes[i] + " annotation "+curAnnotation);
+						log.info(paramTypes[i] + " annotation "+curAnnotation);
 						break;
 					}
 				}

@@ -9,8 +9,6 @@ public class LegacyApplicationWrapper {
 
 	}
 
-
-
 	public void getNextInputs(ResourceSpace resourceSpace) {
 	
 	}

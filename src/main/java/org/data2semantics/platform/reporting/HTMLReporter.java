@@ -27,7 +27,6 @@ import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.InstanceOutput;
 import org.data2semantics.platform.core.data.MultiInput;
 import org.data2semantics.platform.core.data.Output;
-import org.data2semantics.platform.core.data.RawInput;
 import org.data2semantics.platform.core.data.ReferenceInput;
 import org.data2semantics.platform.util.FrequencyModel;
 import org.data2semantics.platform.util.Functions;
