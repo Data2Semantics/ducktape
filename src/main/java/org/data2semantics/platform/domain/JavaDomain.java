@@ -1,7 +1,6 @@
 package org.data2semantics.platform.domain;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -27,13 +26,11 @@ import org.data2semantics.platform.core.data.InstanceInput;
 import org.data2semantics.platform.core.data.JavaType;
 import org.data2semantics.platform.core.data.Output;
 import org.data2semantics.platform.exception.WorkflowCodeMatchException;
-import org.data2semantics.platform.util.Functions;
 import org.data2semantics.platform.util.PlatformUtil;
 
 @DomainDefinition(prefix="java")
-public class JavaDomain implements Domain
+public class JavaDomain implements Domain, Serializable
 {
-	private static File baseDir = (new File(".")).getAbsoluteFile();
 	private static JavaDomain domain = new JavaDomain();
 	
 	@Override

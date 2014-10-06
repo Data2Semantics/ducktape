@@ -138,19 +138,19 @@ public class CommandLineModuleAdapter  implements Module {
 	}
 
 	@Override
-	public boolean isDataSet(String inputName) {
+	public boolean isInputDataSet(String inputName) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean isResult(String outputName) {
+	public boolean isOutputResult(String outputName) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean isAggregator(String inputName) {
+	public boolean isInputAggregator(String inputName) {
 		// TODO Auto-generated method stub
 		return false;
 	}

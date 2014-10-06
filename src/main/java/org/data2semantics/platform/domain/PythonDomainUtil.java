@@ -102,6 +102,7 @@ public class PythonDomainUtil {
 				result.append("\n"+line);
 				line = br.readLine();
 			}
+			br.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,6 +1,5 @@
 package org.data2semantics.platform.domain;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 

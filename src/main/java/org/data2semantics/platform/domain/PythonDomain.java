@@ -7,8 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.data2semantics.platform.annotation.DomainDefinition;
 import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.data.DataType;
@@ -26,9 +26,8 @@ import org.msgpack.unpacker.Unpacker;
 public class PythonDomain implements Domain
 {
 	private static PythonDomain domain = new PythonDomain();
-
-	Logger log = Logger.getLogger(PythonDomain.class);
-
+	Logger log = Logger.getLogger(PythonDomain.class.getName());
+	
 	@Override
 	public boolean typeMatches(Output output, Input input) {
 		DataType outputType = output.dataType();
@@ -57,7 +56,7 @@ public class PythonDomain implements Domain
 	public DataType inputType(String config, String inputName)
 	{
 		String inputType = PythonDomainUtil.getInputType(config, inputName);
-		log.debug("TypeCheck " +config + " " + inputName + " " +inputType);
+		log.info("TypeCheck " +config + " " + inputName + " " +inputType);
 		
 		DataType result = new PythonType(inputType);
 		
@@ -107,7 +106,7 @@ public class PythonDomain implements Domain
 	
 		pythonSource+="\n"+underlyingFunction+"([])";
 
-		log.debug("This is what eventually will be run \n"+pythonSource);
+		log.info("This is what eventually will be run \n"+pythonSource);
 		// Execute Python source
 		String modifiedPythonFileName = instance.module().name()+".py";
 		
@@ -187,7 +186,7 @@ public class PythonDomain implements Domain
 				
 				fis.close();
 			} catch (FileNotFoundException e) {
-				log.debug("File output not found: " + e.getMessage());
+				log.info("File output not found: " + e.getMessage());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
