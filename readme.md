@@ -1,16 +1,8 @@
 # Ducktape Experimental Platform 
 
-
-
-##Background
-
 Experiments in [Data2Semantics](http://www.data2semantics.org/) involve various computations which can be organized in a modular way. These modular components, will be reusable in different use cases, using different parameter settings. Deriving semantics from data in this fashion allows for reproducability and hopefully more productive experimentation.
 
 Ducktape aims to achieve this goal  by providing a platform for defining modular component, composing experiments, executing the experiments and generating provenance and reports. Initial experimental use case incorporated in this platform comprise of machine learning experiments developen in WP1-WP2 of Data2Semantics project.
-
-
-##Features
-
 
 *Module Creation* :
 
