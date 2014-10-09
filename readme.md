@@ -6,7 +6,7 @@ Ducktape aims to achieve this goal  by providing a platform for defining modular
 
 *Module Creation* :
 
-- easily incorporate existing code as a modular components using a few simple annotations, and to run it in a controlled environment
+- easily incorporate existing Java code as a module using annotations.
 - support for modules in Java, Python
 - command line programs can be used as modules for unsupported languages
 
