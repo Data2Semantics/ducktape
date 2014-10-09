@@ -17,6 +17,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.data2semantics.platform.Global;
 import org.data2semantics.platform.core.Workflow;
+import org.data2semantics.platform.execution.ClusterExecutionProfile;
 import org.data2semantics.platform.execution.ExecutionProfile;
 import org.data2semantics.platform.execution.LocalExecutionProfile;
 import org.data2semantics.platform.execution.Orchestrator;
@@ -35,10 +36,17 @@ import org.kohsuke.args4j.Option;
 public class Run
 {	
 	
-	enum ExecutionProfiles {LOCAL, THREADED, HADOOP}
+	enum ExecutionProfiles {LOCAL, THREADED, CLUSTER}
 	@Option(name="--profile", usage="Execution profile to be used LOCAL THREADED HADOOP (default: LOCAL) ")
 	private static ExecutionProfiles execProfile = ExecutionProfiles.LOCAL;
-	  
+	
+	@Option(name="--workflowjar", usage="Jar file name needed to run your modules for Cluster environment")
+	private static String jarFileName=null;
+	
+	
+	@Option(name="--tracker", usage="tracker host:port for Cluster environment")
+	private static String trackerHostPort=null;
+	
     @Option(name="--domainpath", usage="A directory containing source code and resources to be loaded." +
     		" Each source file should be in a directory that matches the name of its controller " +
     		"(ie. java files should be in a directory called 'java'). (default: none)")
@@ -114,8 +122,28 @@ public class Run
 			case THREADED:
 				executionProfile = new ThreadedLocalExecutionProfile();
 				break;
+			case CLUSTER:
+				executionProfile = new ClusterExecutionProfile();
+				break;
+				
 			default:
 				executionProfile = new LocalExecutionProfile();
+		}
+		
+		if(jarFileName !=null){
+			if(!(executionProfile instanceof ClusterExecutionProfile)){
+				usageExit("Jar file only need to be provided for Cluster Execution Profile",parser);
+			}
+			((ClusterExecutionProfile)executionProfile).setJar(jarFileName);
+			
+		}
+		
+		if(trackerHostPort !=null){
+			if(!(executionProfile instanceof ClusterExecutionProfile)){
+				usageExit("Tracker file only need to be provided for Cluster Execution Profile",parser);
+			}
+			((ClusterExecutionProfile)executionProfile).setTracker(trackerHostPort);
+			
 		}
 		
 		ResourceSpace rp = new ResourceSpace();
@@ -130,11 +158,13 @@ public class Run
 		
 		
     	Orchestrator orchestrator = new Orchestrator(workflow,  executionProfile, rp, reporters);
+    	Global.log().info("Start orchestrating ");
     	
     	orchestrator.orchestrate();
-    	
+    	Global.log().info("Finished orchestrating ");
     	for(Reporter reporter : reporters)
-    		reporter.report();
+	    		reporter.report();
+    	
     	
     	// Set status to finished
     	File statusFinished = new File(output, "status.finished");
@@ -143,6 +173,7 @@ public class Run
     	statusRunning.delete();
     	
     	Global.log().info("Workflow execution finished.");
+		System.exit(0);
     }
     
     public static void usageExit(String message, CmdLineParser parser)
