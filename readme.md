@@ -23,6 +23,6 @@ Ducktape aims to achieve this goal  by providing a platform for defining modular
 
 *Scalable Execution Environment*:
 
-- scale your experiments from your laptop to a cluster with minimal effort.
+- scale your experiments from your laptop to a cluster with minimal effort. Initial version based on [PJ2](http://www.cs.rit.edu/~ark/pj2.shtml) is implemented, allow remote execution of Java modules.
 
 More info on [Ducktape Wiki](https://github.com/Data2Semantics/ducktape/wiki)
