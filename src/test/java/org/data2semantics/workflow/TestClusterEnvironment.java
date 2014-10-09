@@ -1,9 +1,7 @@
 package org.data2semantics.workflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.Serializable;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -21,10 +19,9 @@ import org.junit.Test;
 public class TestClusterEnvironment {
 
 	Logger log = Logger.getLogger(TestClusterEnvironment.class);
-	
 
 	@Test
-	public void testClusterEnvironment() throws Exception {
+	public void runAWorkflow() throws Exception {
 		
 		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/Diamond.yaml");
 		
@@ -32,7 +29,26 @@ public class TestClusterEnvironment {
 		
 		ResourceSpace resourceSpace = new ResourceSpace();
 		
-		ClusterExecutionProfile clusterExecutionProfile = new ClusterExecutionProfile("localhost:20618");
+		ClusterExecutionProfile clusterExecutionProfile = new ClusterExecutionProfile();
+		
+		clusterExecutionProfile.setJar("ducktape.jar");
+		
+		Orchestrator platformOrchestrator = new Orchestrator(workflow, clusterExecutionProfile, resourceSpace);
+		
+		platformOrchestrator.orchestrate();
+		
+	}
+
+	@Test
+	public void testClusterEnvironment() throws Exception {
+		
+		Workflow workflow = WorkflowParser.parseYAML("src/test/resources/iterator-test.yaml");
+		
+		log.debug("Check Workflow " +workflow);
+		
+		ResourceSpace resourceSpace = new ResourceSpace();
+		
+		ClusterExecutionProfile clusterExecutionProfile = new ClusterExecutionProfile();
 		
 		clusterExecutionProfile.setJar("ducktape.jar");
 		
@@ -76,6 +92,23 @@ public class TestClusterEnvironment {
 			
 		}
 	}
+   public static int exec(Class klass) throws IOException,
+                                               InterruptedException {
+        String javaHome = System.getProperty("java.home");
+        String javaBin = javaHome +
+                File.separator + "bin" +
+                File.separator + "java";
+        String classpath = System.getProperty("java.class.path");
+        String className = klass.getCanonicalName();
+
+        ProcessBuilder builder = new ProcessBuilder(
+                javaBin, "-cp", classpath, className);
+
+        Process process = builder.start();
+        process.waitFor();
+        return process.exitValue();
+    }
+
 	
 		
 
