@@ -132,20 +132,6 @@
 						</execution>
 					</executions>
 				</plugin>
-
-				<plugin>
-				    <artifactId>maven-assembly-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifest>
-								<mainClass>org.data2semantics.platform.run.Run</mainClass>
-							</manifest>
-						</archive>
-						<descriptorRefs>
-							<descriptorRef>jar-with-dependencies</descriptorRef>
-						</descriptorRefs>
-					</configuration>
-				</plugin>
 				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -154,10 +140,27 @@
 					<configuration>
 					  <excludes>
 						<exclude>**/TestPythonDomain.java</exclude>
+						<exclude>**/TestClusterEnvironment.java</exclude>
 					  </excludes>
 					</configuration>
 				  </plugin>
-				
+			
+				<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<configuration>
+								<archive>
+										<manifest>
+											<mainClass>org.data2semantics.platform.run.Run</mainClass>
+										</manifest>
+								</archive>
+								<descriptorRefs>
+										<descriptorRef>jar-with-dependencies</descriptorRef>
+								</descriptorRefs>
+								<finalName>../ducktape-run</finalName>
+								<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+				</plugin>
+			
 			</plugins>
 	</pluginManagement>
 </build>
