@@ -31,5 +31,6 @@ Ducktape aims to achieve this goal  by providing a platform for defining modular
 
 *Scalable Execution Environment*:
 
-- scale your experiments from your laptop to a cluster with minimal effort (under development).
+- scale your experiments from your laptop to a cluster with minimal effort.
 
+More info on [Ducktape Wiki](https://github.com/Data2Semantics/ducktape/wiki)
