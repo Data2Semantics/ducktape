@@ -12,7 +12,7 @@ import org.data2semantics.platform.annotation.Module;
 public class ListModule {
 	
 	int nOutput;
-	public ListModule(int nOutput) {
+	public ListModule(Integer nOutput) {
 		this.nOutput = nOutput;
 	}
 
@@ -29,7 +29,7 @@ public class ListModule {
 	@Factory
 	public static ListModule getModule(
 			@In(name="nOutput", description="The length of the list to output.") 
-				int nOutput
+				Integer nOutput
 		)
 	{
 		return new ListModule(nOutput);
