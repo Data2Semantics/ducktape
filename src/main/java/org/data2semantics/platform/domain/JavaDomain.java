@@ -56,6 +56,7 @@ public class JavaDomain implements Domain, Serializable
 		return Collections.emptyList(); // TODO
 	}
 
+	
 	@Override
 	public boolean execute(ModuleInstance instance, List<String> errors, Map<String, Object> outputs)
 	{

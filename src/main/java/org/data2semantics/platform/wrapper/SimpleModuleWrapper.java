@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.data2semantics.platform.core.AbstractModule;
+import org.data2semantics.platform.core.ModuleInstance;
 import org.data2semantics.platform.core.State;
 import org.data2semantics.platform.core.Workflow;
 import org.data2semantics.platform.domain.Domain;
@@ -215,6 +216,12 @@ public class SimpleModuleWrapper extends AbstractModule{
 	@Override
 	public boolean isInputAggregator(String inputName) {
 		return aggregators.contains(inputName); 
+	}
+
+	@Override
+	public void instances(List<ModuleInstance> remoteInstances) {
+		instances = remoteInstances;
+		
 	}
 	
 	

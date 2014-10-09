@@ -155,6 +155,12 @@ public class CommandLineModuleAdapter  implements Module {
 		return false;
 	}
 
+	@Override
+	public void instances(List<ModuleInstance> remoteInstances) {
+		 
+		
+	}
+
 	
 
 	
