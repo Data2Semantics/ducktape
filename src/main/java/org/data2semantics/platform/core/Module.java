@@ -175,6 +175,12 @@ public interface Module
 		 * @return
 		 */
 		public boolean dependsOn(Module otherModule);
+
+		/**
+		 * Needed to replace instances with remote instances in Cluster environment execution.
+		 * @param remoteInstances
+		 */
+		public void instances(List<ModuleInstance> remoteInstances);
 		
 		
 }

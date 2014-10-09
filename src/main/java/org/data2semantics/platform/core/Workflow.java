@@ -44,7 +44,7 @@ public final class Workflow implements Serializable{
 	
 	private ArrayList<Module> sortedList = null;
 	
-	private List<Dependency> dependencies = new ArrayList<Dependency>();
+	private transient List<Dependency> dependencies = new ArrayList<Dependency>();
 	/**
 	 * Name of this workflow
 	 */
@@ -607,6 +607,11 @@ public final class Workflow implements Serializable{
 			@Override
 			public boolean isInputAggregator(String inputName) {
 				return aggregators.contains(inputName);
+			}
+
+			@Override
+			public void instances(List<ModuleInstance> remoteInstances) {
+				instances = remoteInstances;
 			}
 		}
 		

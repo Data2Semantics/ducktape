@@ -443,14 +443,19 @@ public abstract class AbstractModule implements Module, Serializable
 		for(Input input : inputs())
 			if(input instanceof ReferenceInput)
 			{
-				if(!((ReferenceInput)input).reference().module().finished())
+				Module referred =((ReferenceInput)input).reference().module();
+				
+				if(!referred.finished())
 					return false;
 			} else 
 			if(input instanceof MultiInput){
 				MultiInput mi = (MultiInput) input;
 				for(Input i : mi.inputs()){
 					if(i instanceof ReferenceInput){
-						if(!((ReferenceInput)i).reference().module().finished())
+						
+						Module referred =((ReferenceInput)i).reference().module();
+								
+						if(!referred.finished())
 							return false;
 					}
 				}
