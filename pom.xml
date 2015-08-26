@@ -14,7 +14,7 @@
 		</repository>
    <repository>
        <id>lib_id</id>
-       <url>file://${project.basedir}/lib</url>
+       <url>https://raw.github.com/Data2Semantics/ducktape/master/lib</url>
    </repository>
 	</repositories>
 
