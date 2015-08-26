@@ -12,12 +12,10 @@
 			<id>jade4j-releases</id>
 			<url>https://raw.github.com/neuland/jade4j/master/releases</url>
 		</repository>
-		<repositories>
    <repository>
        <id>lib_id</id>
        <url>file://${project.basedir}/lib</url>
    </repository>
-</repositories
 	</repositories>
 
 	<dependencies>
