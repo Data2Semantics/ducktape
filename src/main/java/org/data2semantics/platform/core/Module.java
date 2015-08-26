@@ -181,6 +181,4 @@ public interface Module
 		 * @param remoteInstances
 		 */
 		public void instances(List<ModuleInstance> remoteInstances);
-		
-		
 }

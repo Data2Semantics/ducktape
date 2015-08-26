@@ -47,7 +47,8 @@ public abstract class AbstractModule implements Module, Serializable
 	protected Set<String> aggregators = new HashSet<String>(); 
 	protected Set<String> results = new HashSet<String>(); // output names which refer to/are 'experimental results';
 	
-
+	protected String script = null;
+	
 	protected List<ModuleInstance> instances = new ArrayList<ModuleInstance>();
 	
 	protected boolean instantiated = false;
@@ -471,11 +472,13 @@ public abstract class AbstractModule implements Module, Serializable
 		return domain;
 	}
 	
+	public String script()
+	{
+		return script;
+	}
+	
 	private class ModuleInstanceImpl implements ModuleInstance, Serializable
 	{
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -2476861221359610746L;
 		protected State state = State.READY;
 		protected Map<String, InstanceInput> inputs = new LinkedHashMap<String, InstanceInput>();
