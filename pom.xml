@@ -12,6 +12,10 @@
 			<id>jade4j-releases</id>
 			<url>https://raw.github.com/neuland/jade4j/master/releases</url>
 		</repository>
+   <repository>
+       <id>lib_id</id>
+       <url>https://raw.github.com/Data2Semantics/ducktape/master/lib</url>
+   </repository>
 	</repositories>
 
 	<dependencies>
@@ -96,7 +100,6 @@
         <artifactId>parallel-java</artifactId>
         <version>1.0</version>
      </dependency>
-            
 	</dependencies>
 
 	<build>
