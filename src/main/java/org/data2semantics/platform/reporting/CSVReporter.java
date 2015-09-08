@@ -131,7 +131,7 @@ public class CSVReporter implements Reporter
 				line[i++]=""; // Blank to separate inputs with outputs
 									
 				for(InstanceOutput output : instance.outputs())
-					line[i++] = Functions.toString(output.value()); 
+					line[i++] = Functions.toString(output.print() ? output.value() : "<nonprinting output>"); 
 				
 						
 			

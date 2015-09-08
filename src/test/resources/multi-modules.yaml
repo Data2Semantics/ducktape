@@ -45,7 +45,6 @@ workflow:
                 reference: Adder1.result
             second: 
                 reference: Adder2.result
-                
              
     - module:
         name: Multiplier3

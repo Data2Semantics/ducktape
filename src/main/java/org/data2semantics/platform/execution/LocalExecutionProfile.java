@@ -40,15 +40,15 @@ public class LocalExecutionProfile implements ExecutionProfile {
 				
 				for(ModuleInstance mi : m.instances()){
 	
-					log.debug(" Executing instance of module  : " + mi.module().name());
-					log.debug("    Inputs : "+mi.inputs());
+					// log.debug(" Executing instance of module  : " + mi.module().name());
+					// log.debug("    Inputs : "+mi.inputs());
 			
 									
 					mi.execute();
 					
 				
-					log.debug("    Outputs : "+mi.outputs());
-					log.debug(mi+" "+mi.state());
+					// log.debug("    Outputs : "+mi.outputs());
+					// log.debug(mi+" "+mi.state());
 							
 				}
 				
