@@ -151,10 +151,9 @@ public class Run
 		
 		List<Reporter> reporters = Arrays.asList(
 					new HTMLReporter(workflow, new File(output, "report/")),
-					new CSVReporter(workflow, new File(output, "csv/")),
-					new PROVReporter(workflow, new File(output, "prov/"))
+					new CSVReporter(workflow, new File(output, "csv/"))					
 				);
-		
+		// new PROVReporter(workflow, new File(output, "prov/")) (removed because of maven issue)
 		
 		
     	Orchestrator orchestrator = new Orchestrator(workflow,  executionProfile, rp, reporters);
